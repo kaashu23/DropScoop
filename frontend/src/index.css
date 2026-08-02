@@ -5,7 +5,7 @@
 
 @layer base {
   body {
-    @apply bg-cream-main dark:bg-darkBase text-brown dark:text-gray-100 transition-colors duration-500 font-sans antialiased;
+    @apply bg-cream-main text-brown transition-colors duration-500 font-sans antialiased;
   }
 }
 
@@ -15,15 +15,15 @@
   }
   
   .glass {
-    @apply bg-white/70 dark:bg-black/60 backdrop-blur-lg border border-white/20 dark:border-white/10 shadow-lg;
+    @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-lg;
   }
   
   .glass-card {
-    @apply bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 shadow-xl rounded-2xl;
+    @apply bg-white/40 backdrop-blur-md border border-white/30 shadow-xl rounded-2xl;
   }
 
   .btn-brown-pill {
-    @apply bg-brown dark:bg-white text-white dark:text-brown rounded-full transition-all duration-300 hover:scale-105 active:scale-95 shadow-md hover:shadow-xl;
+    @apply bg-brown text-white rounded-full transition-all duration-300 hover:scale-105 active:scale-95 shadow-md hover:shadow-xl;
   }
   
   .btn-gradient {
@@ -49,11 +49,11 @@
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-cream-main dark:bg-darkBase;
+  @apply bg-cream-main;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-brown dark:bg-gray-700 rounded-full hover:bg-brown-light dark:hover:bg-gray-500 transition-colors;
+  @apply bg-brown rounded-full hover:bg-brown-light transition-colors;
 }
 
 @keyframes custom-marquee {

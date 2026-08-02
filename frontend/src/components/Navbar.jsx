@@ -42,20 +42,20 @@ export default function Navbar({ cartCount = 0 }) {
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-8 text-[15px] font-medium text-[#8c7875] dark:text-gray-300">
+        <nav className="hidden lg:flex items-center gap-8 text-[15px] font-medium text-[#8c7875]">
           {navLinks.map((link) => (
             <Link
               key={link.name}
               to={link.path}
-              className={`relative py-1 transition-colors hover:text-[#4a3531] dark:hover:text-white ${
-                location.pathname === link.path ? 'text-[#4a3531] dark:text-white' : ''
+              className={`relative py-1 transition-colors hover:text-[#4a3531] ${
+                location.pathname === link.path ? 'text-[#4a3531]' : ''
               }`}
             >
               {link.name}
               {location.pathname === link.path && (
                 <motion.span 
                   layoutId="navbar-underline"
-                  className="absolute -bottom-1 left-0 right-0 h-[2px] bg-[#4a3531] dark:bg-white" 
+                  className="absolute -bottom-1 left-0 right-0 h-[2px] bg-[#4a3531]" 
                   transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
                 />
               )}
@@ -109,18 +109,18 @@ export default function Navbar({ cartCount = 0 }) {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden mt-4 bg-white dark:bg-darkSurface rounded-3xl p-6 flex flex-col gap-4 font-medium text-base text-[#8c7875] dark:text-gray-300 absolute left-6 right-6 z-40 shadow-xl border border-[#4a3531]/10">
+        <div className="lg:hidden mt-4 bg-white rounded-3xl p-6 flex flex-col gap-4 font-medium text-base text-[#8c7875] absolute left-6 right-6 z-40 shadow-xl border border-[#4a3531]/10">
           {navLinks.map((link) => (
             <Link
               key={link.name}
               to={link.path}
               onClick={() => setMobileMenuOpen(false)}
-              className="py-2 hover:text-[#4a3531] dark:hover:text-white border-b border-[#4a3531]/10 dark:border-gray-700/50 last:border-0"
+              className="py-2 hover:text-[#4a3531] border-b border-[#4a3531]/10 last:border-0"
             >
               {link.name}
             </Link>
           ))}
-          <div className="py-2 mt-2 pt-4 border-t border-[#4a3531]/10 dark:border-gray-700/50 flex justify-center">
+          <div className="py-2 mt-2 pt-4 border-t border-[#4a3531]/10 flex justify-center">
             <SignedOut>
               <SignInButton mode="modal">
                 <button className="bg-[#4a3531] text-white px-8 py-3 rounded-xl font-bold w-full shadow-lg">
@@ -131,7 +131,7 @@ export default function Navbar({ cartCount = 0 }) {
             <SignedIn>
               <div className="flex items-center gap-4 w-full">
                 <UserButton />
-                <span className="font-semibold text-[#4a3531] dark:text-white">My Account</span>
+                <span className="font-semibold text-[#4a3531]">My Account</span>
               </div>
             </SignedIn>
           </div>
