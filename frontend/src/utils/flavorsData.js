@@ -1,0 +1,52 @@
+export const flavorsData = [
+  {
+    _id: "1",
+    name: "Vanilla Bean Dream",
+    description: "Classic vanilla bean ice cream with real Madagascar vanilla.",
+    basePrice: 4.99,
+    categoryName: "Classic",
+    isVegan: false,
+    isSignature: false,
+    modelColorTint: "#f3e5ab",
+    image: "/images/vanilla.jpg"
+  },
+  {
+    _id: "2",
+    name: "Chocolate Fudge River",
+    description: "Rich dark chocolate ice cream with thick fudge swirls.",
+    basePrice: 5.49,
+    categoryName: "Classic",
+    isVegan: false,
+    isSignature: true,
+    modelColorTint: "#3b2f2f",
+    image: "/images/chocolate.jpg"
+  },
+  {
+    _id: "3",
+    name: "Strawberry Delight",
+    description: "Made with fresh, hand-picked strawberries.",
+    basePrice: 5.49,
+    categoryName: "Classic",
+    isVegan: false,
+    isSignature: false,
+    modelColorTint: "#fcb4d5",
+    image: "/images/strawberry.jpg"
+  },
+  { _id: "4", name: "Mint Chip Avalanche", description: "Cool peppermint with crunchy dark chocolate chips.", basePrice: 5.99, categoryName: "Classic", isVegan: false, isSignature: true, modelColorTint: "#98ff98" },
+  { _id: "5", name: "Cookie Dough Chunk", description: "Vanilla ice cream loaded with chocolate chip cookie dough.", basePrice: 6.49, categoryName: "Classic", isVegan: false, isSignature: true, modelColorTint: "#dcb15b" },
+  { _id: "6", name: "Mango Sorbet", description: "Dairy-free, refreshing and sweet mango sorbet.", basePrice: 4.99, categoryName: "Sorbet", isVegan: true, isSignature: false, modelColorTint: "#ffc324" },
+  { _id: "7", name: "Raspberry Lemonade", description: "Tart lemon sorbet swirled with sweet raspberry.", basePrice: 5.49, categoryName: "Sorbet", isVegan: true, isSignature: false, modelColorTint: "#e30b5d" },
+  { _id: "8", name: "Vegan Coconut Bliss", description: "Creamy coconut milk base infused with real coconut flakes.", basePrice: 6.99, categoryName: "Vegan", isVegan: true, isSignature: true, modelColorTint: "#ffffff" },
+  { _id: "9", name: "Pistachio Perfection", description: "Roasted pistachio ice cream with a hint of sea salt.", basePrice: 6.49, categoryName: "Classic", isVegan: false, isSignature: false, modelColorTint: "#93c572" },
+  { _id: "10", name: "Coffee Caramel Crunch", description: "Espresso infused ice cream with caramel ribbons and toffee bits.", basePrice: 5.99, categoryName: "Sundaes", isVegan: false, isSignature: true, modelColorTint: "#6f4e37" },
+  { _id: "11", name: "Blackberry Lavender", description: "Floral lavender ice cream dotted with fresh blackberries.", basePrice: 6.99, categoryName: "Novelty", isVegan: false, isSignature: true, modelColorTint: "#967bb6" },
+  { _id: "12", name: "Matcha Green Tea", description: "Earthy and sweet authentic matcha from Kyoto.", basePrice: 5.49, categoryName: "Classic", isVegan: false, isSignature: false, modelColorTint: "#b2d235" },
+  { _id: "13", name: "Maple Walnut", description: "Real Vermont maple syrup with toasted walnuts.", basePrice: 5.99, categoryName: "Classic", isVegan: false, isSignature: false, modelColorTint: "#bb9351" },
+  { _id: "14", name: "Cotton Candy Swirl", description: "Pink and blue cotton candy flavored magic.", basePrice: 4.99, categoryName: "Novelty", isVegan: false, isSignature: false, modelColorTint: "#ffbcd9" },
+  { _id: "15", name: "Peanut Butter Cup", description: "Peanut butter ice cream packed with chocolate cups.", basePrice: 6.49, categoryName: "Classic", isVegan: false, isSignature: true, modelColorTint: "#c2b280" },
+  { _id: "16", name: "Salted Caramel Pecan", description: "Sweet and salty caramel with candied pecans.", basePrice: 5.99, categoryName: "Classic", isVegan: false, isSignature: false, modelColorTint: "#c68e17" },
+  { _id: "17", name: "Vegan Dark Chocolate", description: "Intense, dairy-free chocolate made with oat milk.", basePrice: 6.99, categoryName: "Vegan", isVegan: true, isSignature: false, modelColorTint: "#2c1503" },
+  { _id: "18", name: "Birthday Cake", description: "Cake batter ice cream with rainbow sprinkles.", basePrice: 5.49, categoryName: "Novelty", isVegan: false, isSignature: true, modelColorTint: "#fffdd0" },
+  { _id: "19", name: "Cherry Garcia Mimic", description: "Cherry ice cream with dark chocolate flakes and fresh cherries.", basePrice: 5.99, categoryName: "Classic", isVegan: false, isSignature: false, modelColorTint: "#de3163" },
+  { _id: "20", name: "Blueberry Cheesecake", description: "Cheesecake base layered with a rich blueberry compote.", basePrice: 6.49, categoryName: "Sundaes", isVegan: false, isSignature: true, modelColorTint: "#4f86f7" }
+];

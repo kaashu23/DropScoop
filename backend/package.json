@@ -1,0 +1,31 @@
+{
+  "name": "dropscoop-backend",
+  "version": "0.1.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@clerk/express": "^2.1.49",
+    "@google/generative-ai": "^0.24.1",
+    "@imagekit/nodejs": "^7.10.0",
+    "@sentry/node": "^10.69.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^8.6.1",
+    "helmet": "^8.3.0",
+    "imagekit": "^6.0.0",
+    "json2csv": "^6.0.0-alpha.2",
+    "mongoose": "^9.9.1",
+    "morgan": "^1.11.0",
+    "multer": "^2.2.0",
+    "nodemailer": "^9.0.3",
+    "socket.io": "^4.8.3",
+    "stripe": "^22.4.0",
+    "svix": "^1.99.1"
+  }
+}

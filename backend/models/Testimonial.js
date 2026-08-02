@@ -1,0 +1,13 @@
+const mongoose = require('mongoose');
+
+const testimonialSchema = new mongoose.Schema({
+  guestName: { type: String, required: true },
+  photo: { type: String },
+  rating: { type: Number, min: 1, max: 5 },
+  quote: { type: String, required: true },
+  isFeatured: { type: Boolean, default: false }
+}, {
+  timestamps: true
+});
+
+module.exports = mongoose.model('Testimonial', testimonialSchema);

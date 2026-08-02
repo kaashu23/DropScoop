@@ -1,0 +1,50 @@
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import Flavor3DViewer from './three/Flavor3DViewer';
+
+export default function FlavorCard({ flavor }) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <motion.div
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      whileHover={{ y: -8, scale: 1.02 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      className="relative overflow-hidden glass-card p-6 flex flex-col h-[420px] group cursor-pointer"
+    >
+      {/* Background glow on hover */}
+      <div 
+        className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none"
+        style={{ 
+          background: `radial-gradient(circle at center, ${flavor.modelColorTint} 0%, transparent 70%)` 
+        }}
+      />
+      
+      {/* 3D Viewer Container */}
+      <div className="w-full h-[220px] mb-4 relative z-10 flex-shrink-0">
+        <Flavor3DViewer color={flavor.modelColorTint} autoRotate={isHovered} />
+      </div>
+
+      <div className="flex flex-col flex-grow z-10 w-full text-center">
+        <h3 className="text-xl font-bold mb-2 text-brown dark:text-white group-hover:text-pinkAccent transition-colors line-clamp-1">
+          {flavor.name}
+        </h3>
+        <p className="text-sm text-brown-light dark:text-gray-400 mb-4 line-clamp-2 flex-grow">
+          {flavor.description}
+        </p>
+        <div className="flex justify-between items-center w-full mt-auto">
+          <span className="text-lg font-bold text-brown dark:text-white">
+            ${flavor.basePrice.toFixed(2)}
+          </span>
+          <span 
+            className="px-3 py-1 text-xs font-bold rounded-full text-white shadow-sm"
+            style={{ backgroundColor: flavor.modelColorTint }}
+          >
+            {flavor.categoryName}
+          </span>
+        </div>
+      </div>
+    </motion.div>
+  );
+}

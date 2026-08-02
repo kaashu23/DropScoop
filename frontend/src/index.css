@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-cream-main dark:bg-darkBase text-brown dark:text-gray-100 transition-colors duration-500 font-sans antialiased;
+  }
+}
+
+@layer utilities {
+  .bg-cream-main {
+    background-color: #faf5ef;
+  }
+  
+  .glass {
+    @apply bg-white/70 dark:bg-black/60 backdrop-blur-lg border border-white/20 dark:border-white/10 shadow-lg;
+  }
+  
+  .glass-card {
+    @apply bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 shadow-xl rounded-2xl;
+  }
+
+  .btn-brown-pill {
+    @apply bg-brown dark:bg-white text-white dark:text-brown rounded-full transition-all duration-300 hover:scale-105 active:scale-95 shadow-md hover:shadow-xl;
+  }
+  
+  .btn-gradient {
+    @apply bg-gradient-to-r from-pinkAccent to-purpleAccent text-white rounded-full font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-pinkAccent/50 hover:scale-105;
+  }
+
+  .arch-shape {
+    border-top-left-radius: 9999px;
+    border-top-right-radius: 9999px;
+  }
+
+  .category-card-shape {
+    border-top-left-radius: 1.5rem;
+    border-top-right-radius: 1.5rem;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-cream-main dark:bg-darkBase;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-brown dark:bg-gray-700 rounded-full hover:bg-brown-light dark:hover:bg-gray-500 transition-colors;
+}
