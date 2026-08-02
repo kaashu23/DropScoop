@@ -39,12 +39,11 @@ exports.sendOrderReceipt = async (userEmail, orderDetails, cartItems = []) => {
   
   const itemsHtml = itemsToRender.map(item => `
     <tr>
-      <td style="padding: 16px 10px; border-bottom: 1px solid #fdfbf7; display: flex; align-items: center; gap: 12px;">
-        ${item.img ? `<img src="${item.img}" alt="${item.name || 'Ice Cream'}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background-color: #fdfbf7; padding: 4px;" />` : ''}
-        <span style="color: #4a3531; font-weight: bold;">${item.name || item.flavor?.name || 'Delicious Scoop'}</span>
+      <td style="padding: 16px 0; border-bottom: 1px solid rgba(74, 53, 49, 0.1);">
+        <span style="color: #4a3531; font-weight: 700; font-size: 15px;">${item.name || item.flavor?.name || 'Ice Cream Scoop'}</span>
       </td>
-      <td style="padding: 16px 10px; border-bottom: 1px solid #fdfbf7; text-align: center; color: #5c433e; font-weight: bold;">${item.qty || item.quantity}</td>
-      <td style="padding: 16px 10px; border-bottom: 1px solid #fdfbf7; text-align: right; color: #4a3531; font-weight: bold;">₹${item.price.toFixed(2)}</td>
+      <td style="padding: 16px 0; border-bottom: 1px solid rgba(74, 53, 49, 0.1); text-align: center; color: #8c7875; font-size: 14px;">${item.qty || item.quantity}</td>
+      <td style="padding: 16px 0; border-bottom: 1px solid rgba(74, 53, 49, 0.1); text-align: right; color: #4a3531; font-weight: 700; font-size: 15px;">₹${item.price.toFixed(2)}</td>
     </tr>
   `).join('');
 
@@ -53,35 +52,34 @@ exports.sendOrderReceipt = async (userEmail, orderDetails, cartItems = []) => {
     to: userEmail,
     subject: `Your DropScoop Order Receipt (#${orderDetails.orderNumber || orderDetails._id})`,
     html: `
-      <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 12px rgba(74, 53, 49, 0.05); border: 1px solid #fdfbf7;">
-        
-        <div style="background-color: #4a3531; padding: 40px 20px; text-align: center;">
-          <h1 style="color: #fdfbf7; margin: 0; font-size: 32px; font-style: italic;">DropScoop</h1>
-          <p style="color: #fbece4; margin-top: 8px; font-size: 16px;">Your sweet treats are confirmed!</p>
-        </div>
-        
-        <div style="padding: 40px 30px;">
-          <div style="background-color: #fdfbf7; border-radius: 12px; padding: 20px; margin-bottom: 30px;">
-            <p style="margin: 0 0 10px 0; color: #8c7875; font-size: 13px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;">Order Number</p>
-            <p style="margin: 0; color: #4a3531; font-size: 18px; font-weight: bold;">#${orderDetails.orderNumber || orderDetails._id}</p>
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #fdfbf7; padding: 40px 20px; color: #4a3531;">
+        <div style="max-width: 540px; margin: 0 auto; background-color: #ffffff; border-radius: 24px; padding: 40px; box-shadow: 0 10px 40px -10px rgba(74, 53, 49, 0.08); border: 1px solid rgba(74, 53, 49, 0.05);">
+          
+          <!-- Header -->
+          <div style="text-align: center; margin-bottom: 40px;">
+            <h1 style="font-family: Georgia, serif; font-size: 36px; color: #4a3531; margin: 0 0 10px 0; font-style: italic; letter-spacing: -0.5px;">DropScoop</h1>
+            <p style="color: #8c7875; font-size: 16px; margin: 0; font-weight: 500;">Your sweet treats are on the way!</p>
           </div>
           
-          ${orderDetails.address && orderDetails.address.street ? `
-          <h3 style="color: #5c433e; font-size: 16px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">Shipping Address</h3>
-          <p style="color: #8c7875; line-height: 1.6; margin-top: 0; margin-bottom: 30px;">
-            ${orderDetails.address.street || orderDetails.address.line1}<br>
-            ${orderDetails.address.city}, ${orderDetails.address.state} ${orderDetails.address.zip || orderDetails.address.postal_code}<br>
-            ${orderDetails.address.country}
-          </p>
-          ` : ''}
-
-          <h3 style="color: #5c433e; font-size: 16px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">Order Details</h3>
-          <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+          <!-- Order Meta -->
+          <div style="display: flex; justify-content: space-between; border-bottom: 2px solid rgba(74, 53, 49, 0.05); padding-bottom: 24px; margin-bottom: 30px;">
+            <div>
+              <p style="font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #8c7875; margin: 0 0 4px 0; font-weight: 700;">Order Number</p>
+              <p style="font-size: 16px; color: #4a3531; margin: 0; font-weight: 700;">#${orderDetails.orderNumber || orderDetails._id}</p>
+            </div>
+            <div style="text-align: right;">
+              <p style="font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #8c7875; margin: 0 0 4px 0; font-weight: 700;">Date</p>
+              <p style="font-size: 14px; color: #4a3531; margin: 0; font-weight: 600;">${new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+            </div>
+          </div>
+          
+          <!-- Items Table -->
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
             <thead>
               <tr>
-                <th style="text-align: left; padding: 10px; border-bottom: 2px solid #4a3531; color: #8c7875; font-size: 13px; text-transform: uppercase;">Item</th>
-                <th style="text-align: center; padding: 10px; border-bottom: 2px solid #4a3531; color: #8c7875; font-size: 13px; text-transform: uppercase;">Qty</th>
-                <th style="text-align: right; padding: 10px; border-bottom: 2px solid #4a3531; color: #8c7875; font-size: 13px; text-transform: uppercase;">Price</th>
+                <th style="text-align: left; padding: 0 0 12px 0; border-bottom: 2px solid rgba(74, 53, 49, 0.1); color: #8c7875; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Item</th>
+                <th style="text-align: center; padding: 0 0 12px 0; border-bottom: 2px solid rgba(74, 53, 49, 0.1); color: #8c7875; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Qty</th>
+                <th style="text-align: right; padding: 0 0 12px 0; border-bottom: 2px solid rgba(74, 53, 49, 0.1); color: #8c7875; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Price</th>
               </tr>
             </thead>
             <tbody>
@@ -89,17 +87,41 @@ exports.sendOrderReceipt = async (userEmail, orderDetails, cartItems = []) => {
             </tbody>
           </table>
           
-          <div style="background-color: #fdfbf7; border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-            <span style="color: #8c7875; font-size: 16px; font-weight: bold; text-transform: uppercase;">Total</span>
-            <span style="color: #4a3531; font-size: 24px; font-weight: bold;">₹${orderDetails.totalAmount.toFixed(2)}</span>
+          <!-- Total -->
+          <div style="text-align: right; margin-bottom: 40px;">
+            <p style="font-size: 14px; color: #8c7875; margin: 0 0 8px 0; display: flex; justify-content: space-between;">
+              <span>Subtotal</span>
+              <span style="color: #4a3531; font-weight: 600;">₹${(orderDetails.totalAmount - (orderDetails.totalAmount > 500 ? 0 : 50)).toFixed(2)}</span>
+            </p>
+            <p style="font-size: 14px; color: #8c7875; margin: 0 0 16px 0; display: flex; justify-content: space-between;">
+              <span>Delivery</span>
+              <span style="color: #4a3531; font-weight: 600;">${orderDetails.totalAmount > 500 ? 'Free' : '₹50.00'}</span>
+            </p>
+            <div style="background-color: #fdfbf7; border-radius: 12px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: #4a3531; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Total</span>
+              <span style="color: #4a3531; font-size: 24px; font-weight: 800;">₹${orderDetails.totalAmount.toFixed(2)}</span>
+            </div>
           </div>
           
-          <div style="margin-top: 40px; text-align: center; border-top: 1px solid #fdfbf7; padding-top: 30px;">
-            <p style="color: #8c7875; font-size: 14px; line-height: 1.5; margin: 0;">
-              Got a question about your order? Just reply to this email.<br>
+          <!-- Shipping Address -->
+          ${orderDetails.address && orderDetails.address.street ? `
+          <div style="background-color: #fdfbf7; border-radius: 16px; padding: 24px; margin-bottom: 40px; border: 1px solid rgba(74, 53, 49, 0.05);">
+            <h3 style="font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: #8c7875; margin: 0 0 12px 0;">Shipping To</h3>
+            <p style="color: #4a3531; font-size: 15px; line-height: 1.5; margin: 0; font-weight: 500;">
+              ${orderDetails.address.street || orderDetails.address.line1}<br>
+              ${orderDetails.address.city}, ${orderDetails.address.state} ${orderDetails.address.zip || orderDetails.address.postal_code}<br>
+            </p>
+          </div>
+          ` : ''}
+          
+          <!-- Footer -->
+          <div style="text-align: center; border-top: 2px solid rgba(74, 53, 49, 0.05); padding-top: 32px;">
+            <p style="color: #8c7875; font-size: 14px; line-height: 1.6; margin: 0;">
+              Have a question about your order? Just reply to this email.<br>
               Stay sweet, <strong style="color: #4a3531;">The DropScoop Team</strong>
             </p>
           </div>
+
         </div>
       </div>
     `
