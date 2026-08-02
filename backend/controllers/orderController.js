@@ -90,17 +90,22 @@ exports.getKioskOrderStatus = async (req, res, next) => {
 exports.getMyOrders = async (req, res, next) => {
   try {
     const auth = req.auth;
+    console.log('[getMyOrders] req.auth:', auth);
     if (!auth || !auth.userId) {
+      console.log('[getMyOrders] Unauthorized - no auth.userId');
       return res.status(401).json({ success: false, message: 'Unauthorized' });
     }
     const User = require('../models/User');
     const user = await User.findOne({ clerkId: auth.userId });
+    console.log('[getMyOrders] Found user:', user ? user._id : 'NOT FOUND');
     if (!user) {
       return res.status(200).json({ success: true, data: [] });
     }
     const orders = await Order.find({ user: user._id }).sort({ createdAt: -1 });
+    console.log(`[getMyOrders] Found ${orders.length} orders for user ${user._id}`);
     res.status(200).json({ success: true, data: orders });
   } catch (error) {
+    console.error('[getMyOrders] ERROR:', error);
     next(error);
   }
 };

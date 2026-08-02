@@ -1,6 +1,6 @@
-const { requireAuth } = require('@clerk/express');
+const { clerkMiddleware } = require('@clerk/express');
 
 // Middleware to verify Clerk session token and protect routes
-const clerkMiddleware = requireAuth();
-
-module.exports = clerkMiddleware;
+// clerkMiddleware parses the token and attaches req.auth.
+// Controllers will manually check if req.auth.userId exists.
+module.exports = clerkMiddleware();

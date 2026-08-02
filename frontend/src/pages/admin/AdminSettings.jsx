@@ -96,7 +96,41 @@ export default function AdminSettings() {
     }));
   };
 
-  if (loading) return <div className="p-8">Loading settings...</div>;
+  if (loading) {
+    return (
+      <div className="max-w-5xl mx-auto animate-pulse">
+        <div className="mb-8">
+          <div className="h-10 w-48 bg-[#4a3531]/10 rounded-xl mb-2"></div>
+          <div className="h-5 w-72 bg-[#4a3531]/5 rounded-lg"></div>
+        </div>
+        <div className="flex flex-col md:flex-row gap-8">
+          <div className="w-full md:w-64">
+            <div className="bg-white rounded-[24px] shadow-sm border border-[#4a3531]/10 p-4 space-y-2">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="h-12 w-full bg-[#4a3531]/5 rounded-xl"></div>
+              ))}
+            </div>
+          </div>
+          <div className="flex-grow">
+            <div className="bg-white rounded-[24px] shadow-sm border border-[#4a3531]/10 p-8 space-y-6">
+              <div className="h-8 w-40 bg-[#4a3531]/10 rounded-xl mb-6"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i}>
+                    <div className="h-5 w-24 bg-[#4a3531]/10 rounded-lg mb-2"></div>
+                    <div className="h-12 w-full bg-[#fdfbf7] rounded-xl border border-[#4a3531]/5"></div>
+                  </div>
+                ))}
+              </div>
+              <div className="pt-6">
+                <div className="h-12 w-32 bg-[#4a3531]/20 rounded-xl"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-5xl mx-auto">

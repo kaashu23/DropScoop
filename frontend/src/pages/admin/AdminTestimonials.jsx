@@ -77,9 +77,15 @@ export default function AdminTestimonials() {
             </thead>
             <tbody className="divide-y divide-[#4a3531]/10">
               {loading ? (
-                <tr>
-                  <td colSpan="5" className="px-6 py-12 text-center text-[#8c7875]">Loading testimonials...</td>
-                </tr>
+                [...Array(4)].map((_, i) => (
+                  <tr key={i} className="animate-pulse border-b border-[#4a3531]/5">
+                    <td className="px-6 py-5"><div className="h-4 w-32 bg-[#4a3531]/10 rounded"></div></td>
+                    <td className="px-6 py-5"><div className="h-4 w-24 bg-[#4a3531]/5 rounded"></div></td>
+                    <td className="px-6 py-5"><div className="h-4 w-48 bg-[#4a3531]/5 rounded"></div></td>
+                    <td className="px-6 py-5"><div className="h-4 w-20 bg-[#4a3531]/5 rounded"></div></td>
+                    <td className="px-6 py-5 flex justify-end"><div className="h-8 w-8 bg-red-100 rounded-lg"></div></td>
+                  </tr>
+                ))
               ) : testimonials.length === 0 ? (
                 <tr>
                   <td colSpan="5" className="px-6 py-12 text-center">
