@@ -110,3 +110,6 @@ Thumbs.db
 # Project plans
 DropScoop_Plan.txt
 *plan*
+
+# Ignore root screenshots
+Screenshot*.png
