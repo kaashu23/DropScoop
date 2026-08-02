@@ -54,7 +54,7 @@ export default function Navbar({ cartCount = 0 }) {
   }
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 py-4 px-6 lg:px-12 transition-all duration-300 bg-[#fdfbf7]/80 backdrop-blur-md border-b border-[#4a3531]/5">
+    <header className="fixed top-0 left-0 w-full z-50 py-4 px-6 lg:px-12 transition-all duration-300 bg-[#fdfbf7]/80 dark:bg-darkBase/80 backdrop-blur-md border-b border-[#4a3531]/5 dark:border-white/5">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         
         {/* Brand Logo */}
