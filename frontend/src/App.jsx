@@ -15,6 +15,7 @@ import AdminFlavors from './pages/admin/AdminFlavors.jsx';
 import AdminOrders from './pages/admin/AdminOrders.jsx';
 import AdminCustomers from './pages/admin/AdminCustomers.jsx';
 import AdminSettings from './pages/admin/AdminSettings.jsx';
+import AdminTestimonials from './pages/admin/AdminTestimonials.jsx';
 import MyOrders from './pages/MyOrders.jsx';
 
 import BuildYourSundae from './pages/BuildYourSundae.jsx';
@@ -146,6 +147,7 @@ export default function App() {
             <Route path="flavors" element={<AdminFlavors />} />
             <Route path="orders" element={<AdminOrders />} />
             <Route path="customers" element={<AdminCustomers />} />
+            <Route path="testimonials" element={<AdminTestimonials />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>
         </Routes>

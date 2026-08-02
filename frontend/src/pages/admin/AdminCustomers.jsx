@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Search, Mail, Phone, Calendar } from 'lucide-react';
+import { Users, Search, Mail, Phone, Calendar, User } from 'lucide-react';
 import { useAuth } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
 
@@ -129,11 +129,9 @@ export default function AdminCustomers() {
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center">
-                        <img 
-                          src={customer.imageUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(customer.name || 'User')}&background=fbece4&color=4a3531`} 
-                          alt={customer.name} 
-                          className="h-10 w-10 flex-shrink-0 rounded-full object-cover shadow-sm border border-[#4a3531]/10" 
-                        />
+                        <div className="h-10 w-10 flex-shrink-0 rounded-full bg-[#fbece4] flex items-center justify-center shadow-sm border border-[#4a3531]/10 text-[#4a3531]">
+                          <User className="w-5 h-5" />
+                        </div>
                         <div className="ml-4">
                           <div className="text-sm font-bold text-[#4a3531]">{customer.name || 'Anonymous User'}</div>
                           <div className="text-sm text-[#8c7875]">ID: {customer._id.substring(customer._id.length - 6).toUpperCase()}</div>

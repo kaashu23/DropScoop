@@ -8,8 +8,15 @@ exports.placeOrder = async (req, res, next) => {
     let dbUserId = null;
     if (clerkId) {
       const User = require('../models/User');
-      const user = await User.findOne({ clerkId });
-      if (user) dbUserId = user._id;
+      let user = await User.findOne({ clerkId });
+      if (!user) {
+        user = await User.create({
+          clerkId,
+          email: customerInfo.email,
+          name: customerInfo.name || 'Customer'
+        });
+      }
+      dbUserId = user._id;
     }
 
     // Create the order in the database
@@ -89,7 +96,7 @@ exports.getMyOrders = async (req, res, next) => {
     const User = require('../models/User');
     const user = await User.findOne({ clerkId: auth.userId });
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found in DB' });
+      return res.status(200).json({ success: true, data: [] });
     }
     const orders = await Order.find({ user: user._id }).sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: orders });

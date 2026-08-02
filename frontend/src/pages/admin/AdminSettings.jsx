@@ -1,21 +1,102 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Save, Store, Mail, Shield, Bell, CreditCard } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useAuth } from '@clerk/clerk-react';
 
 export default function AdminSettings() {
+  const { getToken } = useAuth();
   const [activeTab, setActiveTab] = useState('general');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
+  
+  const [settings, setSettings] = useState({
+    storeName: 'DropScoop',
+    contactEmail: 'hello@dropscoop.com',
+    phoneNumber: '+1 (555) 123-4567',
+    currency: 'INR',
+    storeAddress: '123 Ice Cream Lane, Dessert District, Food City 10001',
+    autoDeliverOrders: true,
+    autoDeliverMinutes: 5,
+    notifications: {
+      newOrderAlerts: true,
+      lowStockWarnings: true,
+      dailySummary: false,
+      customerReviews: true
+    }
+  });
 
-  const handleSave = (e) => {
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const token = await getToken();
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const res = await fetch(`${API_URL}/settings`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success && data.data) {
+        setSettings(data.data);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to load settings');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSave = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
+    
+    try {
+      const token = await getToken();
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const res = await fetch(`${API_URL}/settings`, {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(settings)
+      });
+      
+      const data = await res.json();
+      if (res.ok && data.success) {
+        toast.success('Settings saved successfully!');
+      } else {
+        toast.error('Failed to save settings');
+      }
+    } catch (error) {
+      toast.error('Server error');
+    } finally {
       setIsSubmitting(false);
-      toast.success('Settings saved successfully!');
-    }, 800);
+    }
   };
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setSettings(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const handleNotificationChange = (name, checked) => {
+    setSettings(prev => ({
+      ...prev,
+      notifications: {
+        ...prev.notifications,
+        [name]: checked
+      }
+    }));
+  };
+
+  if (loading) return <div className="p-8">Loading settings...</div>;
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -62,19 +143,19 @@ export default function AdminSettings() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-bold text-[#8c7875] mb-2">Store Name</label>
-                      <input type="text" defaultValue="DropScoop" className="w-full bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl px-4 py-3 text-[#4a3531] outline-none focus:border-[#4a3531] transition-colors" />
+                      <input type="text" name="storeName" value={settings.storeName || ''} onChange={handleChange} className="w-full bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl px-4 py-3 text-[#4a3531] outline-none focus:border-[#4a3531] transition-colors" />
                     </div>
                     <div>
                       <label className="block text-sm font-bold text-[#8c7875] mb-2">Contact Email</label>
-                      <input type="email" defaultValue="hello@dropscoop.com" className="w-full bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl px-4 py-3 text-[#4a3531] outline-none focus:border-[#4a3531] transition-colors" />
+                      <input type="email" name="contactEmail" value={settings.contactEmail || ''} onChange={handleChange} className="w-full bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl px-4 py-3 text-[#4a3531] outline-none focus:border-[#4a3531] transition-colors" />
                     </div>
                     <div>
                       <label className="block text-sm font-bold text-[#8c7875] mb-2">Phone Number</label>
-                      <input type="text" defaultValue="+1 (555) 123-4567" className="w-full bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl px-4 py-3 text-[#4a3531] outline-none focus:border-[#4a3531] transition-colors" />
+                      <input type="text" name="phoneNumber" value={settings.phoneNumber || ''} onChange={handleChange} className="w-full bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl px-4 py-3 text-[#4a3531] outline-none focus:border-[#4a3531] transition-colors" />
                     </div>
                     <div>
                       <label className="block text-sm font-bold text-[#8c7875] mb-2">Currency</label>
-                      <select className="w-full bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl px-4 py-3 text-[#4a3531] outline-none focus:border-[#4a3531] transition-colors appearance-none">
+                      <select name="currency" value={settings.currency || 'INR'} onChange={handleChange} className="w-full bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl px-4 py-3 text-[#4a3531] outline-none focus:border-[#4a3531] transition-colors appearance-none">
                         <option value="INR">₹ INR (Indian Rupee)</option>
                         <option value="USD">$ USD (US Dollar)</option>
                         <option value="EUR">€ EUR (Euro)</option>
@@ -82,22 +163,34 @@ export default function AdminSettings() {
                     </div>
                     <div className="md:col-span-2">
                       <label className="block text-sm font-bold text-[#8c7875] mb-2">Store Address</label>
-                      <textarea rows="3" defaultValue="123 Ice Cream Lane, Dessert District, Food City 10001" className="w-full bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl px-4 py-3 text-[#4a3531] outline-none focus:border-[#4a3531] transition-colors resize-none"></textarea>
+                      <textarea rows="3" name="storeAddress" value={settings.storeAddress || ''} onChange={handleChange} className="w-full bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl px-4 py-3 text-[#4a3531] outline-none focus:border-[#4a3531] transition-colors resize-none"></textarea>
                     </div>
                   </div>
 
                   <div className="pt-6 border-t border-[#4a3531]/10">
                     <h2 className="text-xl font-bold text-[#4a3531] mb-6">Automation</h2>
-                    <div className="flex items-center justify-between p-4 bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl">
+                    <div className="flex items-center justify-between p-4 bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl mb-4">
                       <div>
                         <h4 className="font-bold text-[#4a3531]">Auto-Deliver Orders</h4>
-                        <p className="text-sm text-[#8c7875] mt-1">Automatically mark new orders as Delivered after 5 minutes.</p>
+                        <p className="text-sm text-[#8c7875] mt-1">Automatically mark new orders as Delivered after time limit.</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" defaultChecked className="sr-only peer" />
+                        <input type="checkbox" name="autoDeliverOrders" checked={settings.autoDeliverOrders || false} onChange={handleChange} className="sr-only peer" />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#4a3531]"></div>
                       </label>
                     </div>
+
+                    {settings.autoDeliverOrders && (
+                      <div className="flex items-center justify-between p-4 bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl">
+                        <div>
+                          <h4 className="font-bold text-[#4a3531]">Delivery Time (Minutes)</h4>
+                          <p className="text-sm text-[#8c7875] mt-1">Time to wait before marking as delivered.</p>
+                        </div>
+                        <div className="w-24">
+                          <input type="number" name="autoDeliverMinutes" min="1" value={settings.autoDeliverMinutes || 5} onChange={handleChange} className="w-full bg-white border border-[#4a3531]/10 rounded-xl px-4 py-2 text-[#4a3531] outline-none focus:border-[#4a3531] transition-colors text-center font-bold" />
+                        </div>
+                      </div>
+                    )}
                   </div>
                   
                   <div className="pt-6 border-t border-[#4a3531]/10 flex justify-end">
@@ -116,10 +209,10 @@ export default function AdminSettings() {
                 <form onSubmit={handleSave} className="space-y-6">
                   <div className="space-y-4">
                     {[
-                      { title: 'New Order Alerts', desc: 'Receive an email when a new order is placed.', default: true },
-                      { title: 'Low Stock Warnings', desc: 'Get notified when an ice cream flavor runs low.', default: true },
-                      { title: 'Daily Summary', desc: 'Receive a daily email with total sales and traffic.', default: false },
-                      { title: 'Customer Reviews', desc: 'Alert me when a customer leaves a new review.', default: true }
+                      { key: 'newOrderAlerts', title: 'New Order Alerts', desc: 'Receive an email when a new order is placed.' },
+                      { key: 'lowStockWarnings', title: 'Low Stock Warnings', desc: 'Get notified when an ice cream flavor runs low.' },
+                      { key: 'dailySummary', title: 'Daily Summary', desc: 'Receive a daily email with total sales and traffic.' },
+                      { key: 'customerReviews', title: 'Customer Reviews', desc: 'Alert me when a customer leaves a new review.' }
                     ].map((item, i) => (
                       <div key={i} className="flex items-center justify-between p-4 bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl">
                         <div>
@@ -127,7 +220,7 @@ export default function AdminSettings() {
                           <p className="text-sm text-[#8c7875] mt-1">{item.desc}</p>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
-                          <input type="checkbox" defaultChecked={item.default} className="sr-only peer" />
+                          <input type="checkbox" checked={settings.notifications?.[item.key] || false} onChange={(e) => handleNotificationChange(item.key, e.target.checked)} className="sr-only peer" />
                           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#4a3531]"></div>
                         </label>
                       </div>
@@ -143,141 +236,14 @@ export default function AdminSettings() {
               </motion.div>
             )}
 
-            {activeTab === 'payments' && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <h2 className="text-xl font-bold text-[#4a3531] mb-6">Payment Gateways</h2>
-                <form onSubmit={handleSave} className="space-y-6">
-                  <div className="p-6 bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl mb-6 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-[#ff7fb3]/10 rounded-bl-full pointer-events-none"></div>
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">S</div>
-                        <div>
-                          <h4 className="font-bold text-[#4a3531] text-lg">Stripe Integration</h4>
-                          <p className="text-sm text-green-600 font-medium flex items-center gap-1">
-                            <span className="w-2 h-2 rounded-full bg-green-500"></span> Connected
-                          </p>
-                        </div>
-                      </div>
-                      <button type="button" className="text-sm font-bold text-[#8c7875] hover:text-[#4a3531]">Disconnect</button>
-                    </div>
-                    <div className="space-y-4 pt-4 border-t border-[#4a3531]/10">
-                      <div>
-                        <label className="block text-sm font-bold text-[#8c7875] mb-2">Publishable Key</label>
-                        <input type="password" defaultValue="pk_live_xxxxxxxxxxxxxxxxxxxxxx" className="w-full bg-white border border-[#4a3531]/10 rounded-xl px-4 py-2 text-[#4a3531] outline-none" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-bold text-[#8c7875] mb-2">Secret Key</label>
-                        <input type="password" defaultValue="sk_live_xxxxxxxxxxxxxxxxxxxxxx" className="w-full bg-white border border-[#4a3531]/10 rounded-xl px-4 py-2 text-[#4a3531] outline-none" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-6 bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl opacity-70">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-xl">P</div>
-                        <div>
-                          <h4 className="font-bold text-[#4a3531] text-lg">PayPal Integration</h4>
-                          <p className="text-sm text-[#8c7875] font-medium">Not Connected</p>
-                        </div>
-                      </div>
-                      <button type="button" className="text-sm font-bold bg-white border border-[#4a3531]/20 px-4 py-2 rounded-lg text-[#4a3531] hover:bg-[#4a3531] hover:text-white transition-colors">Connect</button>
-                    </div>
-                  </div>
-
-                  <div className="pt-6 border-t border-[#4a3531]/10 flex justify-end">
-                    <button type="submit" disabled={isSubmitting} className="flex items-center gap-2 bg-[#4a3531] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#5c433e] transition-colors disabled:opacity-70">
-                      <Save className="w-5 h-5" />
-                      {isSubmitting ? 'Saving...' : 'Save Payment Settings'}
-                    </button>
-                  </div>
-                </form>
-              </motion.div>
-            )}
-
-            {activeTab === 'security' && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <h2 className="text-xl font-bold text-[#4a3531] mb-6">Security Settings</h2>
-                <form onSubmit={handleSave} className="space-y-6">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl">
-                      <div>
-                        <h4 className="font-bold text-[#4a3531]">Two-Factor Authentication (2FA)</h4>
-                        <p className="text-sm text-[#8c7875] mt-1">Require an SMS or App code when logging into the Admin dashboard.</p>
-                      </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" defaultChecked className="sr-only peer" />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#4a3531]"></div>
-                      </label>
-                    </div>
-                    
-                    <div className="p-4 bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl">
-                      <h4 className="font-bold text-[#4a3531] mb-4">Admin Session Timeout</h4>
-                      <select className="w-full md:w-1/2 bg-white border border-[#4a3531]/10 rounded-xl px-4 py-3 text-[#4a3531] outline-none appearance-none">
-                        <option value="15">15 Minutes</option>
-                        <option value="30">30 Minutes</option>
-                        <option value="60">1 Hour</option>
-                        <option value="never">Never (Not Recommended)</option>
-                      </select>
-                    </div>
-
-                    <div className="p-4 bg-red-50 border border-red-100 rounded-xl mt-8">
-                      <h4 className="font-bold text-red-600 mb-1">Danger Zone</h4>
-                      <p className="text-sm text-red-500 mb-4">Reset all customer passwords or force logout all active admin sessions.</p>
-                      <button type="button" className="text-sm font-bold bg-white border border-red-200 px-4 py-2 rounded-lg text-red-600 hover:bg-red-600 hover:text-white transition-colors">Force Logout All Sessions</button>
-                    </div>
-                  </div>
-                  <div className="pt-6 border-t border-[#4a3531]/10 flex justify-end">
-                    <button type="submit" disabled={isSubmitting} className="flex items-center gap-2 bg-[#4a3531] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#5c433e] transition-colors disabled:opacity-70">
-                      <Save className="w-5 h-5" />
-                      {isSubmitting ? 'Saving...' : 'Save Security Rules'}
-                    </button>
-                  </div>
-                </form>
-              </motion.div>
-            )}
-
-            {activeTab === 'email' && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <h2 className="text-xl font-bold text-[#4a3531] mb-6">Email Templates</h2>
-                <form onSubmit={handleSave} className="space-y-6">
-                  
-                  <div className="mb-6">
-                    <label className="block text-sm font-bold text-[#8c7875] mb-2">Select Template to Edit</label>
-                    <select className="w-full bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl px-4 py-3 text-[#4a3531] outline-none appearance-none font-medium">
-                      <option>Order Confirmation Receipt</option>
-                      <option>Order Shipped / Out for Delivery</option>
-                      <option>Welcome to DropScoop</option>
-                      <option>Password Reset Request</option>
-                    </select>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-bold text-[#8c7875] mb-2">Email Subject Line</label>
-                      <input type="text" defaultValue="Your DropScoop Order is Confirmed! 🍦" className="w-full bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl px-4 py-3 text-[#4a3531] outline-none focus:border-[#4a3531] transition-colors" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-bold text-[#8c7875] mb-2">Sender Name</label>
-                      <input type="text" defaultValue="DropScoop Team" className="w-full bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl px-4 py-3 text-[#4a3531] outline-none focus:border-[#4a3531] transition-colors" />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-bold text-[#8c7875] mb-2">Email Body (HTML Supported)</label>
-                      <textarea rows="8" defaultValue={`Hi {{customer_name}},\n\nThank you for ordering from DropScoop! We're preparing your ice cream right now.\n\nOrder Total: {{order_total}}\nEstimated Delivery: 5 Minutes\n\nStay Sweet,\nDropScoop`} className="w-full bg-[#fdfbf7] border border-[#4a3531]/10 rounded-xl px-4 py-3 text-[#4a3531] outline-none focus:border-[#4a3531] transition-colors resize-y font-mono text-sm"></textarea>
-                    </div>
-                  </div>
-
-                  <div className="pt-6 border-t border-[#4a3531]/10 flex justify-end gap-4">
-                    <button type="button" className="px-6 py-3 rounded-xl font-bold text-[#4a3531] border border-[#4a3531]/20 hover:bg-[#fdfbf7] transition-colors">
-                      Send Test Email
-                    </button>
-                    <button type="submit" disabled={isSubmitting} className="flex items-center gap-2 bg-[#4a3531] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#5c433e] transition-colors disabled:opacity-70">
-                      <Save className="w-5 h-5" />
-                      {isSubmitting ? 'Saving...' : 'Save Template'}
-                    </button>
-                  </div>
-                </form>
+            {/* Other tabs are just visual placeholders right now */}
+            {(activeTab === 'payments' || activeTab === 'security' || activeTab === 'email') && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="w-16 h-16 bg-[#fbece4] rounded-full flex items-center justify-center text-[#4a3531] mb-4">
+                  {activeTab === 'payments' ? <CreditCard className="w-8 h-8" /> : activeTab === 'security' ? <Shield className="w-8 h-8" /> : <Mail className="w-8 h-8" />}
+                </div>
+                <h3 className="text-xl font-bold text-[#4a3531] mb-2 capitalize">{activeTab} Settings</h3>
+                <p className="text-[#8c7875] max-w-md">This section is currently under development. Additional configuration options will be available soon.</p>
               </motion.div>
             )}
 

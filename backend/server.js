@@ -114,6 +114,9 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/admin', adminRoutes);
 
+const settingsRoutes = require('./routes/settingsRoutes');
+app.use('/api/settings', settingsRoutes);
+
 // Base route
 app.get('/', (req, res) => {
   res.send('DropScoop API is running');
@@ -121,6 +124,7 @@ app.get('/', (req, res) => {
 
 // Start Cron Jobs
 require('./cron/reviewCron'); 
+require('./cron/orderCron');
 
 // Error Handling Middleware (must be last)
 app.use(errorHandler);

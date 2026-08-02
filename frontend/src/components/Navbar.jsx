@@ -21,8 +21,6 @@ export default function Navbar({ cartCount = 0 }) {
     { name: 'Home', path: '/' },
     { name: 'Products', path: '/flavors' },
     { name: 'Customizer', path: '/build-your-sundae' },
-    { name: 'Shop', path: '/shop' },
-    { name: 'About Us', path: '/about' },
     { name: 'Blogs', path: '/blogs' },
     { name: 'Testimonials', path: '/testimonials' },
     { name: 'Contact Us', path: '/contact' },
