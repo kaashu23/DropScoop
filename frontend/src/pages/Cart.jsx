@@ -23,7 +23,7 @@ export default function Cart({ cartItems = [], updateCartItem, removeCartItem, c
     postalCode: ''
   });
 
-  const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  const subtotal = cartItems.reduce((acc, item) => acc + ((item.price || item.basePrice || 0) * item.quantity), 0);
   const delivery = subtotal > 500 ? 0 : 50.00;
   const total = subtotal + delivery;
 
@@ -132,7 +132,7 @@ export default function Cart({ cartItems = [], updateCartItem, removeCartItem, c
                   </div>
 
                   <div className="text-right flex flex-col items-end gap-2 md:w-24">
-                    <p className="font-bold text-[#4a3531] text-lg">₹{(item.price * item.quantity).toFixed(2)}</p>
+                    <p className="font-bold text-[#4a3531] text-lg">₹{((item.price || item.basePrice || 0) * item.quantity).toFixed(2)}</p>
                     <button onClick={() => removeCartItem(item.id)} className="w-8 h-8 rounded-full border border-red-200 text-red-500 flex items-center justify-center hover:bg-red-50 transition-colors">
                       <Trash2 className="w-4 h-4" />
                     </button>

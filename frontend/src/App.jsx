@@ -13,6 +13,8 @@ import AdminLayout from './pages/admin/AdminLayout.jsx';
 import AdminDashboard from './pages/admin/AdminDashboard.jsx';
 import AdminFlavors from './pages/admin/AdminFlavors.jsx';
 import AdminOrders from './pages/admin/AdminOrders.jsx';
+import AdminCustomers from './pages/admin/AdminCustomers.jsx';
+import AdminSettings from './pages/admin/AdminSettings.jsx';
 
 import BuildYourSundae from './pages/BuildYourSundae.jsx';
 import { useUser } from '@clerk/clerk-react';
@@ -141,6 +143,8 @@ export default function App() {
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="flavors" element={<AdminFlavors />} />
             <Route path="orders" element={<AdminOrders />} />
+            <Route path="customers" element={<AdminCustomers />} />
+            <Route path="settings" element={<AdminSettings />} />
           </Route>
         </Routes>
       </main>

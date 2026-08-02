@@ -51,3 +51,12 @@ exports.getSales = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getCustomers = async (req, res, next) => {
+  try {
+    const customers = await User.find().sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: customers });
+  } catch (error) {
+    next(error);
+  }
+};

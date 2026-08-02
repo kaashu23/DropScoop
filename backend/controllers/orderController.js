@@ -32,6 +32,16 @@ exports.placeOrder = async (req, res, next) => {
       console.error('Failed to send order receipt email:', err);
     });
 
+    // Auto-deliver order in 5 minutes
+    setTimeout(async () => {
+      try {
+        await Order.findByIdAndUpdate(newOrder._id, { status: 'Delivered' });
+        console.log(`Order ${newOrder.orderNumber} automatically marked as Delivered.`);
+      } catch (err) {
+        console.error('Auto-delivery failed:', err);
+      }
+    }, 5 * 60 * 1000);
+
     res.status(201).json({ success: true, message: 'Order placed successfully', order: newOrder });
   } catch (error) {
     next(error);
@@ -76,8 +86,8 @@ exports.getOrderById = async (req, res, next) => {
 
 exports.getAllOrders = async (req, res, next) => {
   try {
-    // Get all orders (admin only)
-    res.status(200).json({ success: true, message: 'All orders fetched' });
+    const orders = await Order.find().sort({ createdAt: -1 }).populate('user', 'name email');
+    res.status(200).json({ success: true, data: orders });
   } catch (error) {
     next(error);
   }
@@ -85,8 +95,13 @@ exports.getAllOrders = async (req, res, next) => {
 
 exports.updateOrderStatus = async (req, res, next) => {
   try {
-    // Update order status (admin only)
-    res.status(200).json({ success: true, message: 'Order status updated' });
+    const { id } = req.params;
+    const { status } = req.body;
+    const order = await Order.findByIdAndUpdate(id, { status }, { new: true });
+    if (!order) {
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+    res.status(200).json({ success: true, message: 'Order status updated', data: order });
   } catch (error) {
     next(error);
   }

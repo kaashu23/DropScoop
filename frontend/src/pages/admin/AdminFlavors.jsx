@@ -31,7 +31,7 @@ export default function AdminFlavors() {
       const res = await fetch(`${API_URL}/flavors`);
       const data = await res.json();
       if (data.success) {
-        setFlavors(data.data);
+        setFlavors(data.data || []);
       }
     } catch (err) {
       console.error('Error fetching flavors:', err);

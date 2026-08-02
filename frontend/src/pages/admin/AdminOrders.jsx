@@ -25,7 +25,7 @@ export default function AdminOrders() {
       });
       const data = await res.json();
       if (data.success) {
-        setOrders(data.data);
+        setOrders(data.data || []);
       }
     } catch (error) {
       console.error('Error fetching orders:', error);
