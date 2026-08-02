@@ -84,7 +84,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col font-sans selection:bg-[#ff8eb2] selection:text-white dark:bg-darkBase">
+    <div className="min-h-screen bg-[#fdfbf7] flex flex-col font-sans selection:bg-[#ff8eb2] selection:text-white">
       <Toaster 
         position="top-center" 
         toastOptions={{

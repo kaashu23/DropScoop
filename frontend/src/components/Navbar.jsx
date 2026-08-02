@@ -15,28 +15,7 @@ export default function Navbar({ cartCount = 0 }) {
                   user?.primaryPhoneNumber?.phoneNumber === '+918080299491' || 
                   user?.primaryPhoneNumber?.phoneNumber === '8080299491';
 
-  // Initialize theme
-  useEffect(() => {
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      setDarkMode(true);
-      document.documentElement.classList.add('dark');
-    } else {
-      setDarkMode(false);
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    if (darkMode) {
-      document.documentElement.classList.remove('dark');
-      localStorage.theme = 'light';
-      setDarkMode(false);
-    } else {
-      document.documentElement.classList.add('dark');
-      localStorage.theme = 'dark';
-      setDarkMode(true);
-    }
-  };
+  // Dark mode is currently disabled to maintain the cream/brown aesthetic.
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -54,11 +33,11 @@ export default function Navbar({ cartCount = 0 }) {
   }
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 py-4 px-6 lg:px-12 transition-all duration-300 bg-[#fdfbf7]/80 dark:bg-darkBase/80 backdrop-blur-md border-b border-[#4a3531]/5 dark:border-white/10">
+    <header className="fixed top-0 left-0 w-full z-50 py-4 px-6 lg:px-12 transition-all duration-300 bg-[#fdfbf7]/80 backdrop-blur-md border-b border-[#4a3531]/5">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         
         {/* Brand Logo */}
-        <Link to="/" className="font-serif font-bold text-3xl text-[#4a3531] dark:text-white tracking-tight">
+        <Link to="/" className="font-serif font-bold text-3xl text-[#4a3531] tracking-tight">
           DropScoop.
         </Link>
 
@@ -88,7 +67,7 @@ export default function Navbar({ cartCount = 0 }) {
         <div className="flex items-center gap-4">
           <SignedOut>
             <SignInButton mode="modal">
-              <button className="w-11 h-11 rounded-full border border-[#4a3531]/20 dark:border-white/20 flex items-center justify-center text-[#4a3531] dark:text-white hover:bg-[#4a3531]/5 dark:hover:bg-white/10 transition-all">
+              <button className="w-11 h-11 rounded-full border border-[#4a3531]/20 flex items-center justify-center text-[#4a3531] hover:bg-[#4a3531]/5 transition-all">
                 <User className="w-5 h-5 stroke-[1.5]" />
               </button>
             </SignInButton>
@@ -107,7 +86,7 @@ export default function Navbar({ cartCount = 0 }) {
           </SignedIn>
           
           <Link to="/cart">
-            <button className="w-11 h-11 rounded-full border border-[#4a3531]/20 dark:border-white/20 flex items-center justify-center text-[#4a3531] dark:text-white hover:bg-[#4a3531]/5 dark:hover:bg-white/10 transition-all relative">
+            <button className="w-11 h-11 rounded-full border border-[#4a3531]/20 flex items-center justify-center text-[#4a3531] hover:bg-[#4a3531]/5 transition-all relative">
               <ShoppingBag className="w-5 h-5 stroke-[1.5]" />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-black text-white text-[10px] font-bold rounded-full flex items-center justify-center">
