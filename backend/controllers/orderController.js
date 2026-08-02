@@ -1,12 +1,38 @@
 const Order = require('../models/Order');
-const Stripe = require('stripe');
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_dummy');
-const { json2csv } = require('json2csv');
+const { sendOrderReceipt } = require('../utils/email');
 
 exports.placeOrder = async (req, res, next) => {
   try {
-    // Logic to place an order and trigger Stripe checkout
-    res.status(201).json({ success: true, message: 'Order placed, Stripe session created' });
+    const { items, totalAmount, customerInfo } = req.body;
+    
+    // Create the order in the database
+    const newOrder = await Order.create({
+      orderNumber: `ORD-${Date.now().toString().slice(-6)}`,
+      items: items.map(i => ({
+        flavor: i.id || i._id,
+        name: i.name,
+        qty: i.quantity,
+        price: i.price,
+        size: i.size || 'Single'
+      })),
+      totalAmount,
+      status: 'Pending',
+      guestEmail: customerInfo.email,
+      address: {
+        street: customerInfo.addressLine1,
+        city: customerInfo.city,
+        state: customerInfo.state || 'N/A',
+        zip: customerInfo.postalCode,
+        country: 'IN'
+      }
+    });
+
+    // Try to send order receipt email (pass raw items for images)
+    sendOrderReceipt(customerInfo.email, newOrder, items).catch(err => {
+      console.error('Failed to send order receipt email:', err);
+    });
+
+    res.status(201).json({ success: true, message: 'Order placed successfully', order: newOrder });
   } catch (error) {
     next(error);
   }

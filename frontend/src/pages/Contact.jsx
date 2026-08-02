@@ -10,12 +10,31 @@ export default function Contact() {
 
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.success("Message sent! We'll be in touch soon.", {
-      style: { borderRadius: '12px', background: '#4a3531', color: '#fff' }
-    });
-    setFormData({ name: '', email: '', message: '' });
+    
+    try {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const res = await fetch(`${API_URL}/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      
+      const data = await res.json();
+      
+      if (res.ok && data.success) {
+        toast.success("Message sent! We'll be in touch soon.", {
+          style: { borderRadius: '12px', background: '#4a3531', color: '#fff' }
+        });
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        toast.error("Failed to send message. Please try again.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Server error. Please try again later.");
+    }
   };
 
   return (

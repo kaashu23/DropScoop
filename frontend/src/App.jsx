@@ -14,13 +14,34 @@ import AdminDashboard from './pages/admin/AdminDashboard.jsx';
 import AdminFlavors from './pages/admin/AdminFlavors.jsx';
 
 import BuildYourSundae from './pages/BuildYourSundae.jsx';
+import { useUser } from '@clerk/clerk-react';
 import toast, { Toaster } from 'react-hot-toast';
 
 export default function App() {
-  const [cart, setCart] = useState([]);
+  const { user, isLoaded, isSignedIn } = useUser();
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem('dropscoop_cart');
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+  
   const [iceCreams, setIceCreams] = useState([]);
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+
+  useEffect(() => {
+    if (isLoaded && isSignedIn && user) {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      fetch(`${API_URL}/auth/sync`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(user)
+      }).catch(err => console.error('Failed to sync user', err));
+    }
+  }, [isLoaded, isSignedIn, user]);
+
+  useEffect(() => {
+    localStorage.setItem('dropscoop_cart', JSON.stringify(cart));
+  }, [cart]);
 
   useEffect(() => {
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -55,6 +76,10 @@ export default function App() {
 
   const removeCartItem = (id) => {
     setCart(prev => prev.filter(item => item.id !== id));
+  };
+
+  const clearCart = () => {
+    setCart([]);
   };
 
   return (
@@ -107,7 +132,7 @@ export default function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/testimonials" element={<Testimonials />} />
           <Route path="/blogs" element={<Blogs />} />
-          <Route path="/cart" element={<Cart cartItems={cart} updateCartItem={updateCartItem} removeCartItem={removeCartItem} />} />
+          <Route path="/cart" element={<Cart cartItems={cart} updateCartItem={updateCartItem} removeCartItem={removeCartItem} clearCart={clearCart} />} />
           
           {/* Admin Routes */}
           <Route path="/admin" element={<AdminLayout />}>

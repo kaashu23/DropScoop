@@ -67,3 +67,53 @@ exports.clerkWebhook = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.syncUser = async (req, res, next) => {
+  try {
+    const { 
+      id, 
+      first_name, 
+      last_name, 
+      email_addresses, 
+      phone_numbers,
+      firstName,
+      lastName,
+      emailAddresses,
+      fullName
+    } = req.body;
+    
+    if (!id) return res.status(400).json({ success: false, message: 'Missing clerkId' });
+
+    // Handle both webhook format (snake_case) and frontend format (camelCase)
+    const emails = email_addresses || emailAddresses || [];
+    const email = emails.length > 0 ? (emails[0].email_address || emails[0].emailAddress) : '';
+    
+    const phones = phone_numbers || req.body.phoneNumbers || [];
+    const phone = phones.length > 0 ? (phones[0].phone_number || phones[0].phoneNumber) : '';
+    
+    const name = fullName ? fullName : `${first_name || firstName || ''} ${last_name || lastName || ''}`.trim();
+
+    // Determine role based on environment variables
+    const adminEmails = (process.env.ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase());
+    const adminPhones = (process.env.ADMIN_PHONES || '').split(',').map(p => p.trim());
+    
+    const isAdmin = adminEmails.includes(email.toLowerCase()) || (phone && adminPhones.includes(phone));
+    const role = isAdmin ? 'admin' : 'user';
+
+    const user = await User.findOneAndUpdate(
+      { clerkId: id },
+      { 
+        clerkId: id,
+        name,
+        email,
+        phone,
+        role
+      },
+      { upsert: true, new: true }
+    );
+
+    res.status(200).json({ success: true, message: 'User synced successfully', data: user });
+  } catch (error) {
+    next(error);
+  }
+};
