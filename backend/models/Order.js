@@ -7,11 +7,14 @@ const orderSchema = new mongoose.Schema({
   guestEmail: { type: String },
   guestPhone: { type: String },
   items: [{
-    flavor: { type: mongoose.Schema.Types.ObjectId, ref: 'Flavor' },
-    size: { type: String, enum: ['Single', 'Double', 'Triple', 'Pint', 'Tub'] },
+    flavor: { type: mongoose.Schema.Types.ObjectId, ref: 'Flavor', required: false },
+    name: { type: String },
+    size: { type: String },
     toppings: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Topping' }],
     qty: { type: Number },
-    price: { type: Number }
+    price: { type: Number },
+    isCustom: { type: Boolean, default: false },
+    customDescription: { type: String }
   }],
   orderType: { type: String, enum: ['Delivery', 'Pickup'] },
   store: { type: mongoose.Schema.Types.ObjectId, ref: 'Store' },

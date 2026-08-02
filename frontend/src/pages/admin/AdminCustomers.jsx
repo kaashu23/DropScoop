@@ -34,10 +34,37 @@ export default function AdminCustomers() {
     fetchCustomers();
   }, []);
 
-  const filteredCustomers = customers.filter(customer => 
-    (customer.name && customer.name.toLowerCase().includes(search.toLowerCase())) ||
-    (customer.email && customer.email.toLowerCase().includes(search.toLowerCase()))
-  );
+  const [sortField, setSortField] = useState('createdAt');
+  const [sortDirection, setSortDirection] = useState('desc');
+
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const getSortIcon = (field) => {
+    if (sortField !== field) return <span className="text-[#8c7875]/30 inline-block ml-1">▼</span>;
+    return <span className={`text-[#4a3531] inline-block ml-1 transition-transform ${sortDirection === 'asc' ? 'rotate-180' : ''}`}>▼</span>;
+  };
+
+  const filteredCustomers = customers.filter(customer => {
+    if (!search) return true;
+    const searchLower = search.toLowerCase();
+    return (
+      (customer.name && customer.name.toLowerCase().includes(searchLower)) ||
+      (customer.email && customer.email.toLowerCase().includes(searchLower))
+    );
+  }).sort((a, b) => {
+    let aVal = a[sortField] || '';
+    let bVal = b[sortField] || '';
+    if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+    if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+    return 0;
+  });
 
   return (
     <div>
@@ -59,20 +86,30 @@ export default function AdminCustomers() {
       </div>
 
       <div className="bg-white rounded-[24px] shadow-sm border border-[#4a3531]/10 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[800px]">
-            <thead className="bg-[#fdfbf7] border-b border-[#4a3531]/10">
+        <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-250px)]">
+          <table className="w-full min-w-[800px] relative">
+            <thead className="bg-[#fdfbf7] border-b border-[#4a3531]/10 sticky top-0 z-10 shadow-sm">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-bold text-[#8c7875] uppercase tracking-wider">Customer Info</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-[#8c7875] uppercase tracking-wider">Contact</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-[#8c7875] uppercase tracking-wider">Joined Date</th>
+                <th onClick={() => handleSort('name')} className="px-6 py-4 text-left text-xs font-bold text-[#8c7875] uppercase tracking-wider cursor-pointer hover:bg-[#f5f0e6] transition-colors">
+                  Customer Info {getSortIcon('name')}
+                </th>
+                <th onClick={() => handleSort('email')} className="px-6 py-4 text-left text-xs font-bold text-[#8c7875] uppercase tracking-wider cursor-pointer hover:bg-[#f5f0e6] transition-colors">
+                  Contact {getSortIcon('email')}
+                </th>
+                <th onClick={() => handleSort('createdAt')} className="px-6 py-4 text-left text-xs font-bold text-[#8c7875] uppercase tracking-wider cursor-pointer hover:bg-[#f5f0e6] transition-colors">
+                  Joined Date {getSortIcon('createdAt')}
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#4a3531]/10">
               {loading ? (
-                <tr>
-                  <td colSpan="3" className="px-6 py-12 text-center text-[#8c7875]">Loading customers...</td>
-                </tr>
+                [...Array(5)].map((_, i) => (
+                  <tr key={i} className="animate-pulse">
+                    <td className="px-6 py-6"><div className="flex items-center"><div className="h-10 w-10 bg-gray-200 rounded-full mr-4"></div><div><div className="h-4 bg-gray-200 rounded w-24 mb-2"></div><div className="h-3 bg-gray-100 rounded w-16"></div></div></div></td>
+                    <td className="px-6 py-6"><div className="h-4 bg-gray-200 rounded w-32 mb-2"></div><div className="h-3 bg-gray-100 rounded w-24"></div></td>
+                    <td className="px-6 py-6"><div className="h-4 bg-gray-200 rounded w-20"></div></td>
+                  </tr>
+                ))
               ) : filteredCustomers.length === 0 ? (
                 <tr>
                   <td colSpan="3" className="px-6 py-12 text-center">
@@ -92,9 +129,11 @@ export default function AdminCustomers() {
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center">
-                        <div className="h-10 w-10 flex-shrink-0 bg-[#fbece4] rounded-full flex items-center justify-center text-[#4a3531] font-bold">
-                          {(customer.name || 'U')[0].toUpperCase()}
-                        </div>
+                        <img 
+                          src={customer.imageUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(customer.name || 'User')}&background=fbece4&color=4a3531`} 
+                          alt={customer.name} 
+                          className="h-10 w-10 flex-shrink-0 rounded-full object-cover shadow-sm border border-[#4a3531]/10" 
+                        />
                         <div className="ml-4">
                           <div className="text-sm font-bold text-[#4a3531]">{customer.name || 'Anonymous User'}</div>
                           <div className="text-sm text-[#8c7875]">ID: {customer._id.substring(customer._id.length - 6).toUpperCase()}</div>

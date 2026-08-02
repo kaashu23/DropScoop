@@ -15,6 +15,7 @@ import AdminFlavors from './pages/admin/AdminFlavors.jsx';
 import AdminOrders from './pages/admin/AdminOrders.jsx';
 import AdminCustomers from './pages/admin/AdminCustomers.jsx';
 import AdminSettings from './pages/admin/AdminSettings.jsx';
+import MyOrders from './pages/MyOrders.jsx';
 
 import BuildYourSundae from './pages/BuildYourSundae.jsx';
 import { useUser } from '@clerk/clerk-react';
@@ -136,6 +137,7 @@ export default function App() {
           <Route path="/testimonials" element={<Testimonials />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/cart" element={<Cart cartItems={cart} updateCartItem={updateCartItem} removeCartItem={removeCartItem} clearCart={clearCart} />} />
+          <Route path="/my-orders" element={<MyOrders />} />
           
           {/* Admin Routes */}
           <Route path="/admin" element={<AdminLayout />}>

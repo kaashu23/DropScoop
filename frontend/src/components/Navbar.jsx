@@ -8,7 +8,7 @@ export default function Navbar({ cartCount = 0 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const location = useLocation();
-  const { user } = useUser();
+  const { user, isSignedIn } = useUser();
   
   // Check if current user is admin (matches the env or just hardcoded for UI visibility)
   const isAdmin = user?.primaryEmailAddress?.emailAddress === 'kashishsalvi06@gmail.com' || 
@@ -28,6 +28,10 @@ export default function Navbar({ cartCount = 0 }) {
     { name: 'Contact Us', path: '/contact' },
   ];
 
+  if (isSignedIn) {
+    navLinks.push({ name: 'My Orders', path: '/my-orders' });
+  }
+
   if (isAdmin) {
     navLinks.push({ name: 'Admin', path: '/admin' });
   }
@@ -37,7 +41,7 @@ export default function Navbar({ cartCount = 0 }) {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         
         {/* Brand Logo */}
-        <Link to="/" className="font-serif font-bold text-3xl text-[#4a3531] tracking-tight">
+        <Link to="/" className="font-serif font-bold text-2xl lg:text-3xl text-[#4a3531] tracking-tight shrink-0">
           DropScoop.
         </Link>
 
@@ -64,21 +68,21 @@ export default function Navbar({ cartCount = 0 }) {
         </nav>
 
         {/* Right Icon Actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 lg:gap-4 shrink-0">
           <SignedOut>
             <SignInButton mode="modal">
-              <button className="w-11 h-11 rounded-full border border-[#4a3531]/20 flex items-center justify-center text-[#4a3531] hover:bg-[#4a3531]/5 transition-all">
-                <User className="w-5 h-5 stroke-[1.5]" />
+              <button className="w-9 h-9 lg:w-11 lg:h-11 rounded-full border border-[#4a3531]/20 flex items-center justify-center text-[#4a3531] hover:bg-[#4a3531]/5 transition-all">
+                <User className="w-4 h-4 lg:w-5 lg:h-5 stroke-[1.5]" />
               </button>
             </SignInButton>
           </SignedOut>
           
           <SignedIn>
-            <div className="w-11 h-11 flex items-center justify-center">
+            <div className="w-9 h-9 lg:w-11 lg:h-11 flex items-center justify-center">
               <UserButton 
                 appearance={{
                   elements: {
-                    userButtonAvatarBox: "w-10 h-10 border border-[#4a3531]/20 shadow-sm"
+                    userButtonAvatarBox: "w-8 h-8 lg:w-10 lg:h-10 border border-[#4a3531]/20 shadow-sm"
                   }
                 }}
               />
@@ -86,10 +90,10 @@ export default function Navbar({ cartCount = 0 }) {
           </SignedIn>
           
           <Link to="/cart">
-            <button className="w-11 h-11 rounded-full border border-[#4a3531]/20 flex items-center justify-center text-[#4a3531] hover:bg-[#4a3531]/5 transition-all relative">
-              <ShoppingBag className="w-5 h-5 stroke-[1.5]" />
+            <button className="w-9 h-9 lg:w-11 lg:h-11 rounded-full border border-[#4a3531]/20 flex items-center justify-center text-[#4a3531] hover:bg-[#4a3531]/5 transition-all relative">
+              <ShoppingBag className="w-4 h-4 lg:w-5 lg:h-5 stroke-[1.5]" />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-black text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 lg:w-5 lg:h-5 bg-black text-white text-[9px] lg:text-[10px] font-bold rounded-full flex items-center justify-center">
                   {cartCount}
                 </span>
               )}
@@ -99,9 +103,9 @@ export default function Navbar({ cartCount = 0 }) {
           {/* Mobile menu toggle */}
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
-            className="lg:hidden p-2 text-[#4a3531] dark:text-white hover:scale-110 transition-transform"
+            className="lg:hidden p-1 lg:p-2 text-[#4a3531] hover:scale-110 transition-transform"
           >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {mobileMenuOpen ? <X className="w-5 h-5 lg:w-6 lg:h-6" /> : <Menu className="w-5 h-5 lg:w-6 lg:h-6" />}
           </button>
         </div>
 

@@ -128,12 +128,12 @@ export default function BuildYourSundae({ onAddToCart }) {
           
           {/* Left: 3D Preview (Sticky) */}
           <div className="lg:col-span-7 lg:sticky lg:top-32">
-            <div className="bg-gradient-to-br from-[#fbece4]/40 to-white rounded-[40px] h-[500px] lg:h-[700px] shadow-2xl border border-white/50 overflow-hidden relative">
-              <div className="absolute top-8 left-8 z-10 flex flex-col gap-2">
-                <span className="bg-white/80 backdrop-blur-md px-4 py-2 rounded-full shadow-sm font-bold text-[#4a3531] text-sm tracking-wide">
+            <div className="bg-gradient-to-br from-[#fbece4]/40 to-white rounded-[30px] lg:rounded-[40px] h-[350px] md:h-[500px] lg:h-[700px] shadow-2xl border border-white/50 overflow-hidden relative">
+              <div className="absolute top-4 left-4 lg:top-8 lg:left-8 z-10 flex flex-col gap-2">
+                <span className="bg-white/80 backdrop-blur-md px-3 py-1.5 lg:px-4 lg:py-2 rounded-full shadow-sm font-bold text-[#4a3531] text-xs lg:text-sm tracking-wide">
                   Live 3D Preview
                 </span>
-                <span className="bg-black/5 backdrop-blur-sm px-4 py-1.5 rounded-full text-xs font-semibold text-[#8c7875] w-fit">
+                <span className="bg-black/5 backdrop-blur-sm px-3 py-1 lg:px-4 lg:py-1.5 rounded-full text-[10px] lg:text-xs font-semibold text-[#8c7875] w-fit">
                   Drag to rotate
                 </span>
               </div>

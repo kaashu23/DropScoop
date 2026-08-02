@@ -12,7 +12,7 @@ export default function AdminOrders() {
   const [statusFilter, setStatusFilter] = useState('All');
   const [isUpdating, setIsUpdating] = useState(null);
 
-  const statuses = ['Pending', 'Preparing', 'Out for Delivery', 'Ready for Pickup', 'Delivered', 'Cancelled'];
+  const statuses = ['Pending', 'Delivered', 'Cancelled'];
   const filterStatuses = ['All', ...statuses];
 
   const fetchOrders = async () => {
@@ -90,15 +90,48 @@ export default function AdminOrders() {
     }
   };
 
+  const [sortField, setSortField] = useState('createdAt');
+  const [sortDirection, setSortDirection] = useState('desc');
+
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const getSortIcon = (field) => {
+    if (sortField !== field) return <ChevronDown className="w-4 h-4 text-[#8c7875]/30 inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />;
+    return <ChevronDown className={`w-4 h-4 text-[#4a3531] inline ml-1 transition-transform ${sortDirection === 'asc' ? 'rotate-180' : ''}`} />;
+  };
+
   const filteredOrders = orders.filter(order => {
+    const searchLower = search.toLowerCase();
     const matchesSearch = 
-      (order.orderNumber || order._id).toLowerCase().includes(search.toLowerCase()) ||
-      (order.guestEmail && order.guestEmail.toLowerCase().includes(search.toLowerCase())) ||
-      (order.user && order.user.email && order.user.email.toLowerCase().includes(search.toLowerCase()));
+      (order.orderNumber && order.orderNumber.toLowerCase().includes(searchLower)) ||
+      (order.guestEmail && order.guestEmail.toLowerCase().includes(searchLower)) ||
+      (order._id && order._id.toLowerCase().includes(searchLower));
     
     const matchesStatus = statusFilter === 'All' || order.status === statusFilter;
     
     return matchesSearch && matchesStatus;
+  }).sort((a, b) => {
+    let aVal = a[sortField];
+    let bVal = b[sortField];
+    
+    if (sortField === 'customer') {
+      aVal = a.guestEmail || '';
+      bVal = b.guestEmail || '';
+    } else if (sortField === 'itemsCount') {
+      aVal = a.items?.reduce((sum, i) => sum + (i.qty || 1), 0) || 0;
+      bVal = b.items?.reduce((sum, i) => sum + (i.qty || 1), 0) || 0;
+    }
+
+    if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+    if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+    return 0;
   });
 
   return (
@@ -144,28 +177,40 @@ export default function AdminOrders() {
       </div>
 
       <div className="bg-white rounded-[24px] shadow-sm border border-[#4a3531]/10 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[900px]">
-            <thead className="bg-[#fdfbf7] border-b border-[#4a3531]/10">
+        <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-280px)]">
+          <table className="w-full min-w-[900px] relative">
+            <thead className="bg-[#fdfbf7] border-b border-[#4a3531]/10 sticky top-0 z-10 shadow-sm">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-bold text-[#8c7875] uppercase tracking-wider">Order Details</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-[#8c7875] uppercase tracking-wider">Customer</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-[#8c7875] uppercase tracking-wider">Items</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-[#8c7875] uppercase tracking-wider">Total</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-[#8c7875] uppercase tracking-wider">Status</th>
+                <th onClick={() => handleSort('createdAt')} className="px-6 py-4 text-left text-xs font-bold text-[#8c7875] uppercase tracking-wider cursor-pointer hover:bg-[#f5f0e6] transition-colors group">
+                  Order Details {getSortIcon('createdAt')}
+                </th>
+                <th onClick={() => handleSort('customer')} className="px-6 py-4 text-left text-xs font-bold text-[#8c7875] uppercase tracking-wider cursor-pointer hover:bg-[#f5f0e6] transition-colors group">
+                  Customer {getSortIcon('customer')}
+                </th>
+                <th onClick={() => handleSort('itemsCount')} className="px-6 py-4 text-left text-xs font-bold text-[#8c7875] uppercase tracking-wider cursor-pointer hover:bg-[#f5f0e6] transition-colors group">
+                  Items {getSortIcon('itemsCount')}
+                </th>
+                <th onClick={() => handleSort('totalAmount')} className="px-6 py-4 text-left text-xs font-bold text-[#8c7875] uppercase tracking-wider cursor-pointer hover:bg-[#f5f0e6] transition-colors group">
+                  Total {getSortIcon('totalAmount')}
+                </th>
+                <th onClick={() => handleSort('status')} className="px-6 py-4 text-left text-xs font-bold text-[#8c7875] uppercase tracking-wider cursor-pointer hover:bg-[#f5f0e6] transition-colors group">
+                  Status {getSortIcon('status')}
+                </th>
                 <th className="px-6 py-4 text-right text-xs font-bold text-[#8c7875] uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#4a3531]/10">
               {loading ? (
-                <tr>
-                  <td colSpan="6" className="px-6 py-12 text-center text-[#8c7875]">
-                    <div className="flex justify-center mb-4">
-                      <RefreshCw className="w-8 h-8 animate-spin text-[#4a3531]" />
-                    </div>
-                    Loading orders...
-                  </td>
-                </tr>
+                [...Array(5)].map((_, i) => (
+                  <tr key={i} className="animate-pulse">
+                    <td className="px-6 py-6"><div className="h-4 bg-gray-200 rounded w-24 mb-2"></div><div className="h-3 bg-gray-100 rounded w-16"></div></td>
+                    <td className="px-6 py-6"><div className="h-4 bg-gray-200 rounded w-32 mb-2"></div><div className="h-3 bg-gray-100 rounded w-20"></div></td>
+                    <td className="px-6 py-6"><div className="h-4 bg-gray-200 rounded w-12"></div></td>
+                    <td className="px-6 py-6"><div className="h-4 bg-gray-200 rounded w-16"></div></td>
+                    <td className="px-6 py-6"><div className="h-8 bg-gray-200 rounded-full w-24"></div></td>
+                    <td className="px-6 py-6 text-right"><div className="h-8 bg-gray-200 rounded-lg w-8 ml-auto"></div></td>
+                  </tr>
+                ))
               ) : filteredOrders.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="px-6 py-12 text-center text-[#8c7875]">

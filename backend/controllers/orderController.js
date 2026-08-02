@@ -3,18 +3,32 @@ const { sendOrderReceipt } = require('../utils/email');
 
 exports.placeOrder = async (req, res, next) => {
   try {
-    const { items, totalAmount, customerInfo } = req.body;
+    const { items, totalAmount, customerInfo, clerkId } = req.body;
     
+    let dbUserId = null;
+    if (clerkId) {
+      const User = require('../models/User');
+      const user = await User.findOne({ clerkId });
+      if (user) dbUserId = user._id;
+    }
+
     // Create the order in the database
     const newOrder = await Order.create({
       orderNumber: `ORD-${Date.now().toString().slice(-6)}`,
-      items: items.map(i => ({
-        flavor: i.id || i._id,
-        name: i.name,
-        qty: i.quantity,
-        price: i.price,
-        size: i.size || 'Single'
-      })),
+      user: dbUserId,
+      items: items.map(i => {
+        const itemId = i.id || i._id;
+        const isCustom = itemId && itemId.toString().startsWith('custom-');
+        return {
+          flavor: isCustom ? null : itemId,
+          name: i.name,
+          qty: i.quantity,
+          price: i.price,
+          size: i.size || 'Single',
+          isCustom: isCustom,
+          customDescription: i.description || ''
+        };
+      }),
       totalAmount,
       status: 'Pending',
       guestEmail: customerInfo.email,
@@ -68,8 +82,17 @@ exports.getKioskOrderStatus = async (req, res, next) => {
 
 exports.getMyOrders = async (req, res, next) => {
   try {
-    // Get logged-in user's orders
-    res.status(200).json({ success: true, message: 'My orders fetched' });
+    const auth = req.auth;
+    if (!auth || !auth.userId) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+    const User = require('../models/User');
+    const user = await User.findOne({ clerkId: auth.userId });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found in DB' });
+    }
+    const orders = await Order.find({ user: user._id }).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: orders });
   } catch (error) {
     next(error);
   }

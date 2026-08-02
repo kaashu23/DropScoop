@@ -39,7 +39,8 @@ export default function Cart({ cartItems = [], updateCartItem, removeCartItem, c
         customerInfo: {
           ...checkoutData,
           email: user?.primaryEmailAddress?.emailAddress || 'guest@example.com'
-        }
+        },
+        clerkId: user?.id
       };
 
       const res = await fetch(`${API_URL}/orders`, {
