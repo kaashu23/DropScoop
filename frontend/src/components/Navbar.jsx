@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, ShoppingBag, Menu, X, Sun, Moon } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 export default function Navbar({ cartCount = 0 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -45,8 +46,8 @@ export default function Navbar({ cartCount = 0 }) {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         
         {/* Brand Logo */}
-        <Link to="/" className="font-serif font-bold text-3xl text-[#4a3531] dark:text-white tracking-tight">
-          Milky Scoops.
+        <Link to="/" className="font-serif font-bold text-3xl text-[#4a3531] tracking-tight">
+          DropScoop.
         </Link>
 
         {/* Desktop Navigation Links */}
@@ -61,7 +62,11 @@ export default function Navbar({ cartCount = 0 }) {
             >
               {link.name}
               {location.pathname === link.path && (
-                <span className="absolute -bottom-1 left-0 right-0 h-[2px] bg-[#4a3531] dark:bg-white" />
+                <motion.span 
+                  layoutId="navbar-underline"
+                  className="absolute -bottom-1 left-0 right-0 h-[2px] bg-[#4a3531] dark:bg-white" 
+                  transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
+                />
               )}
             </Link>
           ))}

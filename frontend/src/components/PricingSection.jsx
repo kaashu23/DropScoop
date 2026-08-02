@@ -8,8 +8,8 @@ export default function PricingSection() {
     {
       name: 'Starter',
       description: 'Ideal for solo creators & podcasters starting out.',
-      monthlyPrice: 29,
-      annualPrice: 23,
+      monthlyPrice: 2499,
+      annualPrice: 1999,
       minutes: '300 Mins / mo',
       popular: false,
       cta: 'Start 14-Day Free Trial',
@@ -24,8 +24,8 @@ export default function PricingSection() {
     {
       name: 'Pro',
       description: 'For growing creators, YouTubers & scaling shows.',
-      monthlyPrice: 79,
-      annualPrice: 63,
+      monthlyPrice: 5999,
+      annualPrice: 4999,
       minutes: '1,500 Mins / mo',
       popular: true,
       badge: 'Popular Choice',
@@ -43,8 +43,8 @@ export default function PricingSection() {
     {
       name: 'Agency',
       description: 'For content agencies, podcasts networks & media teams.',
-      monthlyPrice: 199,
-      annualPrice: 159,
+      monthlyPrice: 14999,
+      annualPrice: 11999,
       minutes: 'Unlimited Mins',
       popular: false,
       cta: 'Contact Agency Team',
@@ -121,7 +121,7 @@ export default function PricingSection() {
                   <p className="text-xs text-[#c7c4d7] mb-6 leading-relaxed">{plan.description}</p>
 
                   <div className="mb-8 flex items-baseline gap-2">
-                    <span className="text-5xl font-black text-white tracking-tight">${price}</span>
+                    <span className="text-5xl font-black text-white tracking-tight">₹{price}</span>
                     <span className="text-[#908fa0] text-sm font-medium">/ mo</span>
                   </div>
 

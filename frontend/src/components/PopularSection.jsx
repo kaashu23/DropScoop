@@ -5,21 +5,21 @@ export default function PopularSection() {
     {
       id: 'hazelnut',
       title: 'Hazelnut Flavour Icecream',
-      price: '$5.90',
+      price: '₹149',
       bgColor: 'bg-[#fcece4]',
       image: '/images/hazelnut.png'
     },
     {
       id: 'mint',
       title: 'Mint & Chocolate Flavour Icecream',
-      price: '$5.90',
+      price: '₹149',
       bgColor: 'bg-[#e4f0e5]',
       image: '/images/mint_chocolate.png'
     },
     {
       id: 'orange',
       title: 'Orange Flavour Icecream',
-      price: '$5.90',
+      price: '₹149',
       bgColor: 'bg-[#fcf0dc]',
       image: '/images/orange.png'
     }

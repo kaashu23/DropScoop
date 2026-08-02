@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 import Flavor3DViewer from './three/Flavor3DViewer';
 
 export default function FlavorCard({ flavor }) {
   const [isHovered, setIsHovered] = useState(false);
+  const cardRef = useRef(null);
+  
+  // margin: "400px" means it will start rendering slightly before it enters the screen
+  const isInView = useInView(cardRef, { margin: "400px", once: false });
 
   return (
     <motion.div
+      ref={cardRef}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       whileHover={{ y: -8, scale: 1.02 }}
@@ -23,7 +28,13 @@ export default function FlavorCard({ flavor }) {
       
       {/* 3D Viewer Container */}
       <div className="w-full h-[220px] mb-4 relative z-10 flex-shrink-0">
-        <Flavor3DViewer color={flavor.modelColorTint} autoRotate={isHovered} />
+        {isInView ? (
+          <Flavor3DViewer color={flavor.modelColorTint} autoRotate={isHovered} />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-brown-light/30">
+            <span className="text-4xl animate-pulse">🍦</span>
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col flex-grow z-10 w-full text-center">
@@ -35,7 +46,7 @@ export default function FlavorCard({ flavor }) {
         </p>
         <div className="flex justify-between items-center w-full mt-auto">
           <span className="text-lg font-bold text-brown dark:text-white">
-            ${flavor.basePrice.toFixed(2)}
+            ₹{flavor.basePrice.toFixed(2)}
           </span>
           <span 
             className="px-3 py-1 text-xs font-bold rounded-full text-white shadow-sm"

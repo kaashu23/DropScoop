@@ -21,7 +21,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-cream dark:bg-darkBase text-brown dark:text-gray-100 flex flex-col font-sans selection:bg-pinkAccent selection:text-white transition-colors duration-500">
+    <div className="min-h-screen bg-[#fdfbf7] flex flex-col font-sans selection:bg-[#ff8eb2] selection:text-white">
       <Navbar cartCount={cart.length} />
       
       <main className="flex-grow">

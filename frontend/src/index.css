@@ -56,3 +56,12 @@
 ::-webkit-scrollbar-thumb {
   @apply bg-brown dark:bg-gray-700 rounded-full hover:bg-brown-light dark:hover:bg-gray-500 transition-colors;
 }
+
+@keyframes custom-marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-custom-marquee {
+  animation: custom-marquee 25s linear infinite;
+}

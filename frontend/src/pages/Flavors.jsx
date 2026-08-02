@@ -31,12 +31,12 @@ export default function Flavors() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-12 md:mb-16"
         >
-          <h1 className="text-6xl md:text-7xl font-black mb-6 text-brown dark:text-white">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-black mb-4 md:mb-6 text-brown dark:text-white">
             Our Flavors
           </h1>
-          <p className="text-brown-light dark:text-gray-400 text-xl max-w-2xl mx-auto font-light leading-relaxed">
+          <p className="text-brown-light dark:text-gray-400 text-sm sm:text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed">
             Browse our complete collection of meticulously crafted ice creams. 
             Hover over any flavor to interact with its 3D scoop.
           </p>
