@@ -32,12 +32,20 @@ exports.clerkWebhook = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Webhook signature verification failed' });
     }
 
-    const { id, first_name, last_name, email_addresses } = evt.data;
+    const { id, first_name, last_name, email_addresses, phone_numbers } = evt.data;
     const eventType = evt.type;
 
     if (eventType === 'user.created' || eventType === 'user.updated') {
       const email = email_addresses && email_addresses.length > 0 ? email_addresses[0].email_address : '';
+      const phone = phone_numbers && phone_numbers.length > 0 ? phone_numbers[0].phone_number : '';
       const name = `${first_name || ''} ${last_name || ''}`.trim();
+
+      // Determine role based on environment variables
+      const adminEmails = (process.env.ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase());
+      const adminPhones = (process.env.ADMIN_PHONES || '').split(',').map(p => p.trim());
+      
+      const isAdmin = adminEmails.includes(email.toLowerCase()) || (phone && adminPhones.includes(phone));
+      const role = isAdmin ? 'admin' : 'user';
 
       await User.findOneAndUpdate(
         { clerkId: id },
@@ -45,7 +53,8 @@ exports.clerkWebhook = async (req, res, next) => {
           clerkId: id,
           name,
           email,
-          role: 'user'
+          phone,
+          role
         },
         { upsert: true, new: true }
       );

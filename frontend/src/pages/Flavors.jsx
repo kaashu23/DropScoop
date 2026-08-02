@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search } from 'lucide-react';
 import { flavorsData } from '../utils/flavorsData';
@@ -6,18 +6,52 @@ import FlavorCard from '../components/FlavorCard';
 
 const categories = ["All", "Classic", "Sorbet", "Vegan", "Sundaes", "Novelty"];
 
-export default function Flavors() {
+export default function Flavors({ onAddToCart }) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
+  const [apiFlavors, setApiFlavors] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+    fetch(`${API_URL}/flavors`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data && data.data.length > 0) {
+          // Flatten category object if populated
+          const processedFlavors = data.data.map(f => ({
+            ...f,
+            categoryName: f.category?.name || 'Classic'
+          }));
+          setApiFlavors(processedFlavors);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.log('API offline or empty, falling back to local data');
+        setLoading(false);
+      });
+  }, []);
 
   const filteredFlavors = useMemo(() => {
-    return flavorsData.filter(flavor => {
+    // Combine API flavors and fallback data so the store always looks full
+    let dataSource = [...apiFlavors];
+    
+    // If the database has very few items (e.g. just getting started), append the rest from our mock data
+    const existingNames = new Set(apiFlavors.map(f => f.name.toLowerCase()));
+    flavorsData.forEach(mockFlavor => {
+      if (!existingNames.has(mockFlavor.name.toLowerCase())) {
+        dataSource.push(mockFlavor);
+      }
+    });
+    
+    return dataSource.filter(flavor => {
       const matchesSearch = flavor.name.toLowerCase().includes(search.toLowerCase()) || 
-                            flavor.description.toLowerCase().includes(search.toLowerCase());
+                            (flavor.description && flavor.description.toLowerCase().includes(search.toLowerCase()));
       const matchesCategory = activeCategory === "All" || flavor.categoryName === activeCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [search, activeCategory]);
+  }, [search, activeCategory, apiFlavors]);
 
   return (
     <div className="w-full pt-32 px-6 pb-24 overflow-hidden relative">
@@ -73,24 +107,39 @@ export default function Flavors() {
         </div>
 
         {/* Flavors Grid */}
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          <AnimatePresence>
-            {filteredFlavors.map(flavor => (
-              <motion.div
-                layout
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: -20 }}
-                transition={{ duration: 0.3 }}
-                key={flavor._id}
-              >
-                <FlavorCard flavor={flavor} />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          {loading ? (
+            Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="bg-white/50 dark:bg-white/5 rounded-3xl p-6 h-[400px] border border-brown/5 dark:border-white/5 animate-pulse">
+                <div className="w-full h-48 bg-gray-200 dark:bg-gray-700 rounded-2xl mb-6"></div>
+                <div className="h-6 w-3/4 bg-gray-200 dark:bg-gray-700 rounded mb-4"></div>
+                <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                <div className="h-4 w-5/6 bg-gray-200 dark:bg-gray-700 rounded mb-6"></div>
+                <div className="flex justify-between items-center mt-auto">
+                  <div className="h-6 w-1/3 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                  <div className="h-10 w-10 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <AnimatePresence>
+              {filteredFlavors.map(flavor => (
+                <motion.div
+                  layout
+                  initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                  key={flavor._id || flavor.id || flavor.name}
+                >
+                  <FlavorCard flavor={flavor} onAddToCart={onAddToCart} />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          )}
+        </div>
 
-        {filteredFlavors.length === 0 && (
+        {!loading && filteredFlavors.length === 0 && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

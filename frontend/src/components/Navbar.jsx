@@ -2,11 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { User, ShoppingBag, Menu, X, Sun, Moon } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from '@clerk/clerk-react';
 
 export default function Navbar({ cartCount = 0 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const location = useLocation();
+  const { user } = useUser();
+  
+  // Check if current user is admin (matches the env or just hardcoded for UI visibility)
+  const isAdmin = user?.primaryEmailAddress?.emailAddress === 'kashishsalvi06@gmail.com' || 
+                  user?.primaryPhoneNumber?.phoneNumber === '+918080299491' || 
+                  user?.primaryPhoneNumber?.phoneNumber === '8080299491';
 
   // Initialize theme
   useEffect(() => {
@@ -34,6 +41,7 @@ export default function Navbar({ cartCount = 0 }) {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Products', path: '/flavors' },
+    { name: 'Customizer', path: '/build-your-sundae' },
     { name: 'Shop', path: '/shop' },
     { name: 'About Us', path: '/about' },
     { name: 'Blogs', path: '/blogs' },
@@ -41,8 +49,12 @@ export default function Navbar({ cartCount = 0 }) {
     { name: 'Contact Us', path: '/contact' },
   ];
 
+  if (isAdmin) {
+    navLinks.push({ name: 'Admin', path: '/admin' });
+  }
+
   return (
-    <header className="absolute top-0 left-0 w-full z-50 py-6 px-6 lg:px-12 transition-all duration-300">
+    <header className="fixed top-0 left-0 w-full z-50 py-4 px-6 lg:px-12 transition-all duration-300 bg-[#fdfbf7]/80 backdrop-blur-md border-b border-[#4a3531]/5">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         
         {/* Brand Logo */}
@@ -74,18 +86,36 @@ export default function Navbar({ cartCount = 0 }) {
 
         {/* Right Icon Actions */}
         <div className="flex items-center gap-4">
-          <button className="w-11 h-11 rounded-full border border-[#4a3531]/20 flex items-center justify-center text-[#4a3531] hover:bg-[#4a3531]/5 transition-all">
-            <User className="w-5 h-5 stroke-[1.5]" />
-          </button>
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="w-11 h-11 rounded-full border border-[#4a3531]/20 flex items-center justify-center text-[#4a3531] hover:bg-[#4a3531]/5 transition-all">
+                <User className="w-5 h-5 stroke-[1.5]" />
+              </button>
+            </SignInButton>
+          </SignedOut>
           
-          <button className="w-11 h-11 rounded-full border border-[#4a3531]/20 flex items-center justify-center text-[#4a3531] hover:bg-[#4a3531]/5 transition-all relative">
-            <ShoppingBag className="w-5 h-5 stroke-[1.5]" />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-black text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                {cartCount}
-              </span>
-            )}
-          </button>
+          <SignedIn>
+            <div className="w-11 h-11 flex items-center justify-center">
+              <UserButton 
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: "w-10 h-10 border border-[#4a3531]/20 shadow-sm"
+                  }
+                }}
+              />
+            </div>
+          </SignedIn>
+          
+          <Link to="/cart">
+            <button className="w-11 h-11 rounded-full border border-[#4a3531]/20 flex items-center justify-center text-[#4a3531] hover:bg-[#4a3531]/5 transition-all relative">
+              <ShoppingBag className="w-5 h-5 stroke-[1.5]" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-black text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </button>
+          </Link>
           
           {/* Mobile menu toggle */}
           <button 
@@ -111,6 +141,21 @@ export default function Navbar({ cartCount = 0 }) {
               {link.name}
             </Link>
           ))}
+          <div className="py-2 mt-2 pt-4 border-t border-[#4a3531]/10 dark:border-gray-700/50 flex justify-center">
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button className="bg-[#4a3531] text-white px-8 py-3 rounded-xl font-bold w-full shadow-lg">
+                  Sign In
+                </button>
+              </SignInButton>
+            </SignedOut>
+            <SignedIn>
+              <div className="flex items-center gap-4 w-full">
+                <UserButton />
+                <span className="font-semibold text-[#4a3531] dark:text-white">My Account</span>
+              </div>
+            </SignedIn>
+          </div>
         </div>
       )}
     </header>
