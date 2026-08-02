@@ -1,21 +1,12 @@
-const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 require('dotenv').config();
 
-const createTransporter = () => {
-  return nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
-    }
-  });
-};
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 exports.sendContactEmail = async (name, email, message) => {
-  const transporter = createTransporter();
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: process.env.EMAIL_USER,
+  const msg = {
+    to: process.env.EMAIL_USER, // The verified sender email receiving the contact form
+    from: process.env.EMAIL_USER, // Must be the verified Single Sender email
     subject: `New Contact Form Submission from ${name}`,
     text: `You have a new message from ${name} (${email}):\n\n${message}`,
     html: `
@@ -28,12 +19,10 @@ exports.sendContactEmail = async (name, email, message) => {
       </div>
     `
   };
-  return transporter.sendMail(mailOptions);
+  return sgMail.send(msg);
 };
 
 exports.sendOrderReceipt = async (userEmail, orderDetails, cartItems = []) => {
-  const transporter = createTransporter();
-  
   // Try to use cartItems for images, otherwise fallback to orderDetails.items
   const itemsToRender = cartItems.length > 0 ? cartItems : orderDetails.items;
   
@@ -47,9 +36,9 @@ exports.sendOrderReceipt = async (userEmail, orderDetails, cartItems = []) => {
     </tr>
   `).join('');
 
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
+  const msg = {
     to: userEmail,
+    from: process.env.EMAIL_USER, // Must be the verified Single Sender email
     subject: `Your DropScoop Order Receipt (#${orderDetails.orderNumber || orderDetails._id})`,
     html: `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #fdfbf7; padding: 40px 20px; color: #4a3531;">
@@ -126,5 +115,5 @@ exports.sendOrderReceipt = async (userEmail, orderDetails, cartItems = []) => {
       </div>
     `
   };
-  return transporter.sendMail(mailOptions);
+  return sgMail.send(msg);
 };
