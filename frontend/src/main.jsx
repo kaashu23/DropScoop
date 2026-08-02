@@ -28,25 +28,24 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-if (!PUBLISHABLE_KEY) {
-  throw new Error("Missing Publishable Key")
-}
-
 const isInvalidKey = PUBLISHABLE_KEY === 'pk_test_...';
 
-if (isInvalidKey) {
+if (!PUBLISHABLE_KEY || isInvalidKey) {
   ReactDOM.createRoot(document.getElementById('root')).render(
     <div style={{ padding: '40px', fontFamily: 'sans-serif', textAlign: 'center', background: '#fdfbf7', minHeight: '100vh' }}>
-      <h1 style={{ color: '#4a3531', fontSize: '2rem', marginBottom: '1rem' }}>Clerk Authentication Setup Required</h1>
-      <p style={{ color: '#8c7875', fontSize: '1.2rem', marginBottom: '2rem' }}>
-        You need to add your real Clerk Publishable Key to your <code>frontend/.env</code> file to run the app.
+      <h1 style={{ color: '#4a3531', fontSize: '2rem', margin: '0 0 1rem 0' }}>Configuration Error</h1>
+      <p style={{ color: '#8c7875', fontSize: '1.2rem', margin: '0 0 2rem 0' }}>
+        The <code>VITE_CLERK_PUBLISHABLE_KEY</code> is missing from your build environment.
       </p>
-      <div style={{ background: '#fff', padding: '20px', borderRadius: '10px', display: 'inline-block', textAlign: 'left', border: '1px solid #ccc' }}>
-        <p>1. Go to <a href="https://dashboard.clerk.com" target="_blank" style={{ color: 'blue' }}>Clerk Dashboard</a></p>
-        <p>2. Copy your <strong>Publishable Key</strong></p>
-        <p>3. Open <code>frontend/.env</code></p>
-        <p>4. Replace <code>VITE_CLERK_PUBLISHABLE_KEY=pk_test_...</code> with your real key.</p>
-        <p>5. Restart your Vite development server.</p>
+      <div style={{ background: '#fff', padding: '30px', borderRadius: '16px', display: 'inline-block', textAlign: 'left', border: '1px solid #eee', boxShadow: '0 10px 40px -10px rgba(74,53,49,0.1)' }}>
+        <h3 style={{ margin: '0 0 15px 0', color: '#4a3531' }}>How to fix this:</h3>
+        <ol style={{ margin: 0, padding: '0 0 0 20px', color: '#5c433e', lineHeight: 1.6 }}>
+          <li>Go to your <strong>Netlify Dashboard</strong></li>
+          <li>Click on <strong>Site configuration</strong> → <strong>Environment variables</strong></li>
+          <li>Add a new variable: <code>VITE_CLERK_PUBLISHABLE_KEY</code> and paste your key.</li>
+          <li><strong>CRITICAL:</strong> Go to the <strong>Deploys</strong> tab.</li>
+          <li>Click <strong>Trigger deploy</strong> → <strong>Clear cache and deploy site</strong>.</li>
+        </ol>
       </div>
     </div>
   );
