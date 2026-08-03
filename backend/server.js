@@ -118,7 +118,7 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/admin', adminRoutes);
 
 const settingsRoutes = require('./routes/settingsRoutes');
-app.use('/api/settings', settingsRoutes);
+app.use('/api/admin/settings', settingsRoutes);
 
 // Base route
 app.get('/', (req, res) => {
