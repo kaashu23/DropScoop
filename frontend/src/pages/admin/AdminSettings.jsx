@@ -34,7 +34,7 @@ export default function AdminSettings() {
     try {
       const token = await getToken();
       const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-      const res = await fetch(`${API_URL}/settings`, {
+      const res = await fetch(`${API_URL}/admin/settings`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -56,7 +56,7 @@ export default function AdminSettings() {
     try {
       const token = await getToken();
       const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-      const res = await fetch(`${API_URL}/settings`, {
+      const res = await fetch(`${API_URL}/admin/settings`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
