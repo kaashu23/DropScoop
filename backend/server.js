@@ -86,6 +86,9 @@ app.use('/api', limiter);
 
 app.use(express.json()); // Body parser
 
+// Apply Clerk middleware globally so req.auth is always available
+const { clerkMiddleware } = require('@clerk/express');
+app.use(clerkMiddleware());
 // Setup Socket.io Connections
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);

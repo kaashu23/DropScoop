@@ -99,112 +99,111 @@ export default function MyOrders() {
             </Link>
           </div>
         ) : (
-          <div className="space-y-8 max-w-lg mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto px-4 md:px-0">
             {orders.map((order) => (
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 key={order._id} 
-                className="relative bg-white shadow-lg mx-4 md:mx-0 overflow-hidden"
-                style={{
-                  borderRadius: '12px 12px 0 0',
-                  filter: 'drop-shadow(0 10px 15px rgba(74, 53, 49, 0.05))'
-                }}
+                className="relative bg-white shadow-lg rounded-2xl border border-[#4a3531]/5 h-full flex flex-col"
               >
-                {/* Receipt Zig-Zag Bottom */}
-                <div className="absolute bottom-0 left-0 w-full h-3 flex space-x-1 overflow-hidden" style={{ transform: 'translateY(50%)' }}>
-                  {[...Array(30)].map((_, i) => (
-                    <div key={i} className="w-3 h-3 bg-[#fdfbf7] transform rotate-45 shrink-0" />
-                  ))}
-                </div>
-
-                <div className="p-6 md:p-8 pb-10">
-                  {/* Receipt Header */}
-                  <div className="text-center mb-6">
+                {/* Top Section */}
+                <div className="p-5 md:p-6 rounded-t-2xl bg-white relative overflow-hidden flex-shrink-0">
+                  <div className="text-center mb-5">
                     <h3 className="font-serif text-2xl font-bold text-[#4a3531] italic tracking-tight mb-1">DropScoop</h3>
-                    <p className="text-xs text-[#8c7875] uppercase tracking-widest font-bold">Official Receipt</p>
+                    <p className="text-[10px] text-[#8c7875] uppercase tracking-[0.2em] font-bold">Official Receipt</p>
                   </div>
 
-                  <div className="flex flex-col items-center justify-center border-y-2 border-dashed border-[#4a3531]/10 py-4 mb-6">
-                    <p className="text-xs font-bold text-[#8c7875] uppercase tracking-wider mb-1">
-                      Order #{order.orderNumber || order._id.slice(-6).toUpperCase()}
-                    </p>
-                    <p className="text-[#4a3531] font-medium text-sm">
-                      {new Date(order.createdAt).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                    </p>
+                  <div className="flex justify-between items-center bg-[#fdfbf7] rounded-xl p-3 mb-4 border border-[#4a3531]/5">
+                    <div>
+                      <p className="text-[9px] font-bold text-[#8c7875] uppercase tracking-wider mb-0.5">Order No.</p>
+                      <p className="text-[#4a3531] font-bold text-xs">#{order.orderNumber || order._id.slice(-6).toUpperCase()}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[9px] font-bold text-[#8c7875] uppercase tracking-wider mb-0.5">Date</p>
+                      <p className="text-[#4a3531] font-bold text-xs">
+                        {new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </p>
+                    </div>
                   </div>
 
-                  {/* Status Badge */}
-                  <div className="flex justify-center mb-6">
-                    <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-bold border ${
-                      order.status === 'Delivered' ? 'bg-green-50 text-green-700 border-green-200' : 
-                      order.status === 'Cancelled' ? 'bg-red-50 text-red-700 border-red-200' : 
-                      'bg-yellow-50 text-yellow-700 border-yellow-200'
+                  <div className="flex justify-center mt-2 mb-1">
+                    <div className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold border ${
+                      order.status === 'Delivered' ? 'bg-[#f0fdf4] text-[#166534] border-[#bbf7d0]' : 
+                      order.status === 'Cancelled' ? 'bg-[#fef2f2] text-[#991b1b] border-[#fecaca]' : 
+                      'bg-[#fbece4] text-[#4a3531] border-[#fbece4]/80'
                     }`}>
                       {getStatusIcon(order.status)}
                       <span>{order.status}</span>
                     </div>
                   </div>
+                </div>
 
-                  {/* Items List */}
-                  <div className="space-y-4 mb-6">
+                {/* Divider with Punched Holes */}
+                <div className="relative h-6 flex items-center justify-center bg-white flex-shrink-0">
+                  <div className="absolute left-[-12px] w-6 h-6 bg-[#fdfbf7] rounded-full shadow-inner border border-[#4a3531]/5 z-10"></div>
+                  <div className="w-full border-t border-dashed border-[#4a3531]/15 mx-6"></div>
+                  <div className="absolute right-[-12px] w-6 h-6 bg-[#fdfbf7] rounded-full shadow-inner border border-[#4a3531]/5 z-10"></div>
+                </div>
+
+                {/* Bottom Section */}
+                <div className="p-5 md:p-6 rounded-b-2xl bg-white relative flex-grow flex flex-col">
+                  <div className="space-y-4 mb-5 flex-grow">
                     {order.items.map((item, idx) => (
-                      <div key={idx} className="flex justify-between items-start">
-                        <div className="flex-1 pr-4">
-                          <div className="flex items-start">
-                            <span className="font-bold text-[#4a3531] w-6 shrink-0">{item.qty}x</span>
-                            <div>
-                              <h4 className="font-bold text-[#4a3531] leading-tight">{item.name}</h4>
-                              <p className="text-xs text-[#8c7875] mt-0.5">{item.size || 'Single Scoop'}</p>
-                            </div>
+                      <div key={idx} className="flex justify-between items-start group">
+                        <div className="flex items-start">
+                          <span className="font-bold text-[#4a3531] bg-[#fbece4] w-6 h-6 flex items-center justify-center rounded-md text-[10px] mr-3 shrink-0">{item.qty}x</span>
+                          <div>
+                            <h4 className="font-bold text-[#4a3531] text-xs md:text-sm leading-tight group-hover:text-[#5c433e] transition-colors">{item.name}</h4>
+                            <p className="text-[10px] text-[#8c7875] mt-0.5">{item.size || 'Single Scoop'}</p>
                           </div>
                         </div>
-                        <div className="font-bold text-[#4a3531] shrink-0 text-right">
+                        <div className="font-bold text-[#4a3531] shrink-0 text-right text-xs md:text-sm pl-4">
                           ₹{(item.price * item.qty).toFixed(2)}
                         </div>
                       </div>
                     ))}
                   </div>
 
-                  {/* Totals */}
-                  <div className="border-t-2 border-dashed border-[#4a3531]/10 pt-4">
-                    <div className="flex justify-between items-center mb-2 text-sm text-[#8c7875]">
-                      <span>Subtotal</span>
-                      <span>₹{(order.totalAmount - (order.totalAmount > 500 ? 0 : 50)).toFixed(2)}</span>
+                  <div className="bg-[#fdfbf7] rounded-xl p-4 border border-[#4a3531]/5 space-y-2 mt-auto">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-[#8c7875] font-medium">Subtotal</span>
+                      <span className="text-[#4a3531] font-bold">₹{(order.totalAmount - (order.totalAmount > 500 ? 0 : 50)).toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between items-center mb-4 text-sm text-[#8c7875]">
-                      <span>Delivery</span>
-                      <span>{order.totalAmount > 500 ? 'Free' : '₹50.00'}</span>
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-[#8c7875] font-medium">Delivery</span>
+                      <span className="text-[#4a3531] font-bold">{order.totalAmount > 500 ? 'Free' : '₹50.00'}</span>
                     </div>
-                    
-                    <div className="flex justify-between items-center bg-[#fdfbf7] p-4 rounded-xl">
-                      <span className="font-bold text-[#4a3531] uppercase tracking-wider text-sm">Total Paid</span>
-                      <span className="text-2xl font-black text-[#4a3531]">₹{order.totalAmount.toFixed(2)}</span>
+                    <div className="pt-2 border-t border-[#4a3531]/10 flex justify-between items-end">
+                      <span className="font-bold text-[#4a3531] uppercase tracking-wider text-[10px] mb-1">Total Paid</span>
+                      <span className="text-xl font-black text-[#4a3531]">₹{order.totalAmount.toFixed(2)}</span>
                     </div>
                   </div>
 
-                  {/* Actions */}
                   {order.status === 'Pending' && (
-                    <div className="mt-6 pt-6 border-t border-[#4a3531]/5">
+                    <div className="mt-5">
                       <button 
                         onClick={() => handleCancelOrder(order._id)}
-                        className="w-full py-3 rounded-xl text-red-500 font-bold border border-red-200 hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+                        className="w-full py-2.5 rounded-xl text-red-500 text-sm font-bold border-2 border-red-100 hover:bg-red-50 hover:border-red-200 transition-all flex items-center justify-center gap-1.5"
                       >
-                        <XCircle className="w-5 h-5" />
+                        <XCircle className="w-4 h-4" />
                         Cancel Order
                       </button>
                     </div>
                   )}
-
-                  {/* Barcode Deco */}
-                  <div className="mt-8 flex justify-center opacity-30">
-                    <div className="w-48 h-8 flex space-x-1">
-                      {[...Array(20)].map((_, i) => (
-                        <div key={i} className="h-full bg-[#4a3531]" style={{ width: `${Math.random() * 4 + 1}px` }} />
+                  
+                  {/* Decorative Barcode */}
+                  <div className="mt-6 pt-3 flex flex-col items-center opacity-40">
+                    <div className="h-8 flex items-end justify-center space-x-[2px] w-full max-w-[160px]">
+                      {[...Array(24)].map((_, i) => (
+                        <div key={i} className="bg-[#4a3531] rounded-t-[1px]" style={{ 
+                          width: `${Math.random() * 2 + 1}px`, 
+                          height: `${Math.random() * 60 + 40}%` 
+                        }} />
                       ))}
                     </div>
+                    <p className="text-[7px] tracking-[0.3em] font-mono text-[#4a3531] mt-1.5">THK-U-FR-ORDRNG</p>
                   </div>
-                  
                 </div>
               </motion.div>
             ))}

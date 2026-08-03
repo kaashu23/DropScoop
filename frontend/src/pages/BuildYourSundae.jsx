@@ -26,7 +26,7 @@ function IceCreamScoop({ color, position, index }) {
 // Procedural 3D Cone Component
 function WaffleCone() {
   return (
-    <mesh position={[0, -2, 0]} castShadow receiveShadow>
+    <mesh position={[0, -2, 0]} rotation={[Math.PI, 0, 0]} castShadow receiveShadow>
       <coneGeometry args={[1.3, 4, 32]} />
       <meshStandardMaterial color="#d4a373" roughness={0.7} />
     </mesh>
@@ -103,7 +103,7 @@ export default function BuildYourSundae({ onAddToCart }) {
       name: `Custom ${size}-Scoop Sundae`,
       price: totalPrice,
       quantity: 1,
-      image: selectedFlavors[0]?.images?.[0] || '/images/vanilla.jpg',
+      img: selectedFlavors[0]?.images?.[0] || 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&q=80&w=400',
       description: selectedFlavors.map(f => f.name).join(', ')
     };
     
@@ -115,8 +115,14 @@ export default function BuildYourSundae({ onAddToCart }) {
   };
 
   return (
-    <div className="min-h-screen pt-32 pb-24 px-6 bg-[#fdfbf7]">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-[#fdfbf7] pt-32 pb-20 relative">
+      <Toaster position="bottom-right" />
+      
+      {/* Decorative blobs */}
+      <div className="absolute top-20 left-10 w-64 h-64 bg-[#fbece4]/40 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#e5f0e6]/40 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
           <h1 className="text-5xl md:text-6xl font-serif font-bold text-[#4a3531] mb-4">Build Your Sundae</h1>
           <p className="text-[#8c7875] text-lg max-w-2xl mx-auto">
@@ -138,7 +144,7 @@ export default function BuildYourSundae({ onAddToCart }) {
                 </span>
               </div>
               
-              <Canvas shadows camera={{ position: [0, 2.5, 11], fov: 40 }}>
+              <Canvas shadows camera={{ position: [0, 3, 14], fov: 40 }}>
                 <ambientLight intensity={0.6} />
                 <directionalLight position={[10, 10, 5]} intensity={1.5} castShadow shadow-mapSize-width={2048} shadow-mapSize-height={2048} />
                 <spotLight position={[-10, 10, -10]} intensity={1} angle={0.3} penumbra={1} color="#fbece4" />

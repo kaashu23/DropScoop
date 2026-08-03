@@ -9,7 +9,7 @@ router.get('/kiosk/:orderNumber', orderController.getKioskOrderStatus);
 
 // User protected
 router.post('/', orderController.placeOrder);
-router.get('/my', clerkMiddleware, orderController.getMyOrders);
+router.get('/my', orderController.getMyOrders);
 
 // Admin protected
 router.get('/export', orderController.exportOrders);
