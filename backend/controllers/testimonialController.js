@@ -19,8 +19,8 @@ exports.addTestimonial = async (req, res, next) => {
     const user = await User.findOne({ clerkId: auth.userId });
     if (!user) return res.status(403).json({ success: false, message: 'You must place an order first to add a testimonial.' });
 
-    const orderCount = await Order.countDocuments({ user: user._id });
-    if (orderCount === 0) return res.status(403).json({ success: false, message: 'You must place at least one order to add a testimonial.' });
+    const deliveredOrderCount = await Order.countDocuments({ user: user._id, status: 'Delivered' });
+    if (deliveredOrderCount === 0) return res.status(403).json({ success: false, message: 'You must have at least one delivered order to leave a testimonial.' });
 
     const { guestName, rating, quote } = req.body;
     const newTestimonial = await Testimonial.create({

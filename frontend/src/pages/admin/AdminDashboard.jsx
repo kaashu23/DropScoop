@@ -43,45 +43,7 @@ export default function AdminDashboard() {
         <p className="text-[#8c7875] mt-1">Here's what's happening with DropScoop today.</p>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        
-        {/* Stat Cards */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-white p-6 rounded-3xl shadow-sm border border-[#4a3531]/10 flex flex-col relative overflow-hidden">
-          <div className="w-12 h-12 bg-[#fbece4] rounded-full flex items-center justify-center text-[#4a3531] mb-4">
-            <DollarSign className="w-6 h-6" />
-          </div>
-          <p className="text-[#8c7875] font-medium text-sm">Total Revenue</p>
-          <div className="mt-1">
-            {loading ? <div className="h-8 w-24 bg-gray-200 animate-pulse rounded-md"></div> : <h3 className="text-2xl font-bold text-[#4a3531]">${stats.revenue.toLocaleString()}</h3>}
-          </div>
-          <div className="absolute top-6 right-6 flex items-center text-green-500 text-sm font-bold">
-            <TrendingUp className="w-4 h-4 mr-1" /> +{stats.growth}%
-          </div>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white p-6 rounded-3xl shadow-sm border border-[#4a3531]/10 flex flex-col relative overflow-hidden">
-          <div className="w-12 h-12 bg-[#e5f0e6] rounded-full flex items-center justify-center text-[#4a3531] mb-4">
-            <ShoppingBag className="w-6 h-6" />
-          </div>
-          <p className="text-[#8c7875] font-medium text-sm">Total Orders</p>
-          <div className="mt-1">
-            {loading ? <div className="h-8 w-16 bg-gray-200 animate-pulse rounded-md"></div> : <h3 className="text-2xl font-bold text-[#4a3531]">{stats.orders}</h3>}
-          </div>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-white p-6 rounded-3xl shadow-sm border border-[#4a3531]/10 flex flex-col relative overflow-hidden">
-          <div className="w-12 h-12 bg-[#fcf0dc] rounded-full flex items-center justify-center text-[#4a3531] mb-4">
-            <Users className="w-6 h-6" />
-          </div>
-          <p className="text-[#8c7875] font-medium text-sm">Total Customers</p>
-          <div className="mt-1">
-            {loading ? <div className="h-8 w-16 bg-gray-200 animate-pulse rounded-md"></div> : <h3 className="text-2xl font-bold text-[#4a3531]">{stats.customers}</h3>}
-          </div>
-        </motion.div>
-
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
         <div className="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-[#4a3531]/10 min-h-[400px]">
           <h3 className="text-xl font-bold text-[#4a3531] mb-6">Revenue Overview</h3>
           <div className="w-full h-72">
@@ -138,7 +100,7 @@ export default function AdminDashboard() {
                     <p className="text-xs text-[#8c7875]">{order.items?.length || 0} items</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-[#4a3531] text-sm">${(order.totalAmount || 0).toFixed(2)}</p>
+                    <p className="font-bold text-[#4a3531] text-sm">₹{(order.totalAmount || 0).toFixed(2)}</p>
                     <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
                       order.status === 'delivered' ? 'bg-green-100 text-green-700' :
                       order.status === 'processing' ? 'bg-blue-100 text-blue-700' :
@@ -152,6 +114,44 @@ export default function AdminDashboard() {
             )}
           </div>
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        
+        {/* Stat Cards */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-white p-6 rounded-3xl shadow-sm border border-[#4a3531]/10 flex flex-col relative overflow-hidden">
+          <div className="w-12 h-12 bg-[#fbece4] rounded-full flex items-center justify-center text-[#4a3531] mb-4">
+            <DollarSign className="w-6 h-6" />
+          </div>
+          <p className="text-[#8c7875] font-medium text-sm">Total Revenue</p>
+          <div className="mt-1">
+            {loading ? <div className="h-8 w-24 bg-gray-200 animate-pulse rounded-md"></div> : <h3 className="text-2xl font-bold text-[#4a3531]">₹{stats.revenue.toLocaleString()}</h3>}
+          </div>
+          <div className="absolute top-6 right-6 flex items-center text-green-500 text-sm font-bold">
+            <TrendingUp className="w-4 h-4 mr-1" /> +{stats.growth}%
+          </div>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white p-6 rounded-3xl shadow-sm border border-[#4a3531]/10 flex flex-col relative overflow-hidden">
+          <div className="w-12 h-12 bg-[#e5f0e6] rounded-full flex items-center justify-center text-[#4a3531] mb-4">
+            <ShoppingBag className="w-6 h-6" />
+          </div>
+          <p className="text-[#8c7875] font-medium text-sm">Total Orders</p>
+          <div className="mt-1">
+            {loading ? <div className="h-8 w-16 bg-gray-200 animate-pulse rounded-md"></div> : <h3 className="text-2xl font-bold text-[#4a3531]">{stats.orders}</h3>}
+          </div>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-white p-6 rounded-3xl shadow-sm border border-[#4a3531]/10 flex flex-col relative overflow-hidden">
+          <div className="w-12 h-12 bg-[#fcf0dc] rounded-full flex items-center justify-center text-[#4a3531] mb-4">
+            <Users className="w-6 h-6" />
+          </div>
+          <p className="text-[#8c7875] font-medium text-sm">Total Customers</p>
+          <div className="mt-1">
+            {loading ? <div className="h-8 w-16 bg-gray-200 animate-pulse rounded-md"></div> : <h3 className="text-2xl font-bold text-[#4a3531]">{stats.customers}</h3>}
+          </div>
+        </motion.div>
+
       </div>
     </div>
   );
