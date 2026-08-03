@@ -1,34 +1,48 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, ContactShadows, Environment, Float } from '@react-three/drei';
+import { OrbitControls, ContactShadows, Environment, Float, MeshDistortMaterial } from '@react-three/drei';
 import { Loader2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 // Procedural 3D Scoop Component
-function IceCreamScoop({ color, position, index }) {
+function IceCreamScoop({ color, position, rotation = [0, 0, 0], index }) {
   return (
-    <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5} floatingRange={[position[1] - 0.05, position[1] + 0.05]}>
-      <mesh position={[position[0], position[1], position[2]]} castShadow receiveShadow>
-        <sphereGeometry args={[1.2, 32, 32]} />
-        <meshStandardMaterial color={color} roughness={0.4} metalness={0.1} />
-        {/* Simple rim around the bottom of the scoop */}
-        <mesh position={[0, -0.8, 0]} rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[1.0, 0.25, 16, 32]} />
-          <meshStandardMaterial color={color} roughness={0.4} />
-        </mesh>
+    <group position={position} rotation={rotation}>
+      {/* Main scoop body - distorted to look like organic hand-scooped ice cream */}
+      <mesh castShadow receiveShadow scale={[1, 0.85, 1]}>
+        <sphereGeometry args={[1.2, 64, 64]} />
+        <MeshDistortMaterial 
+          color={color} 
+          roughness={0.9} 
+          metalness={0.0} 
+          distort={0.3} 
+          speed={0} 
+        />
       </mesh>
-    </Float>
+      
+      {/* The melting 'skirt' at the bottom of the scoop to connect it organically */}
+      <mesh castShadow receiveShadow position={[0, -0.85, 0]} scale={[1.1, 0.35, 1.1]}>
+        <sphereGeometry args={[1.15, 64, 32]} />
+        <MeshDistortMaterial 
+          color={color} 
+          roughness={0.9} 
+          metalness={0.0} 
+          distort={0.4} 
+          speed={0} 
+        />
+      </mesh>
+    </group>
   );
 }
 
 // Procedural 3D Cone Component
 function WaffleCone() {
   return (
-    <mesh position={[0, -2, 0]} rotation={[Math.PI, 0, 0]} castShadow receiveShadow>
-      <coneGeometry args={[1.3, 4, 32]} />
-      <meshStandardMaterial color="#d4a373" roughness={0.7} />
+    <mesh position={[0, -2.1, 0]} rotation={[Math.PI, 0, 0]} castShadow receiveShadow>
+      <coneGeometry args={[1.3, 4, 64]} />
+      <meshStandardMaterial color="#d4a373" roughness={0.9} metalness={0.1} />
     </mesh>
   );
 }
@@ -144,7 +158,7 @@ export default function BuildYourSundae({ onAddToCart }) {
                 </span>
               </div>
               
-              <Canvas shadows camera={{ position: [0, 3, 14], fov: 40 }}>
+              <Canvas shadows camera={{ position: [0, 4, 16], fov: 45 }}>
                 <ambientLight intensity={0.6} />
                 <directionalLight position={[10, 10, 5]} intensity={1.5} castShadow shadow-mapSize-width={2048} shadow-mapSize-height={2048} />
                 <spotLight position={[-10, 10, -10]} intensity={1} angle={0.3} penumbra={1} color="#fbece4" />
@@ -154,12 +168,23 @@ export default function BuildYourSundae({ onAddToCart }) {
                   <WaffleCone />
                   
                   {selectedFlavors.map((flavor, index) => {
-                    const yPos = 0.5 + (index * 1.5);
+                    // Tighter overlap on Y axis
+                    const yPos = 0.5 + (index * 1.3);
+                    
+                    // Offset scoops to make them look realistically stacked instead of perfect snowman
+                    const xPos = index === 1 ? 0.25 : index === 2 ? -0.15 : 0;
+                    const zPos = index === 1 ? 0.15 : index === 2 ? -0.2 : 0;
+                    
+                    // Tilt the top scoops slightly
+                    const rotX = index === 1 ? 0.2 : index === 2 ? -0.1 : 0;
+                    const rotZ = index === 1 ? -0.15 : index === 2 ? 0.2 : 0;
+
                     return (
                       <IceCreamScoop 
                         key={`${index}-${flavor?._id}`} 
                         color={flavor?.modelColorTint || '#fbece4'} 
-                        position={[0, yPos, 0]} 
+                        position={[xPos, yPos, zPos]} 
+                        rotation={[rotX, 0, rotZ]}
                         index={index}
                       />
                     );
